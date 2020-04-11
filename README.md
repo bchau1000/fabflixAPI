@@ -8,7 +8,7 @@ Deployment Instructions:
   5. Import the project into Intellij as a Maven project.
   6. To run the project, add a new configuration: Tomcat Server > Local
   7. Mark the artifact(s): cs122b-spring20-project1-team10:war OR cs122b-spring20-project1-team10:war exploded
-  8. In the application context at the bottom, change the existing text to: /cs122b-spring20-project1-team10-war
+  8. In the application context at the bottom, change the existing text to: /cs122b-spring20-project1-team10
   9. Hit apply, then ok
   10. Deploy the Tomcat Server
   
