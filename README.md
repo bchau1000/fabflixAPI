@@ -8,4 +8,7 @@ Contributions:
   - Movie List Page: Alex Nguyen
   - Single Movie Page: Brian Chau
   - Single Star Page: Brian Chau
+  
+  Tomcat Deployemt Instructions:
+  
 
