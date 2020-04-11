@@ -29,7 +29,7 @@ public class SingleMovieServlet extends HttpServlet {
 			Connection dbcon = dataSource.getConnection();
 			String query = "SELECT DISTINCT id as 'id', title as 'title', year, director as 'director', name as 'name', " +
 					"starId as 'starId', rating as 'rating', genres as 'genres' " +
-					"FROM singlemovie WHERE id = ?;";
+					"FROM singleMovie WHERE id = ?;";
 
 			PreparedStatement statement = dbcon.prepareStatement(query);
 			statement.setString(1, id);
