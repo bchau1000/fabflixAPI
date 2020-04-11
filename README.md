@@ -12,6 +12,7 @@ Deployment Instructions:
   9. Hit apply, then ok
   10. Deploy the Tomcat Server
   
+  
 Contributions:
   - SQL queries for Single Movie Page: Brian Chau
   - SQL queries for Single Star Page: Alex Nguyen
