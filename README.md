@@ -1,5 +1,10 @@
 Demo link: https://youtu.be/CnCeUNH2GBY
 
+Prior to Deployment:
+  1. Run the included "create_table.sql" to create the movieDB
+  2. "create_table.sql" includes extra views for the necessary queries
+  2. Populate the movieDB with "movie-data.sql"
+
 Deployment Instructions:
   1. Clone the project in cmd using: git clone https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-10.git
   2. Navigate to the cloned project folder in cmd
