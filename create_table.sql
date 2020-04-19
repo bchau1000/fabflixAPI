@@ -104,3 +104,16 @@ CREATE VIEW singleMovie as
     SELECT *
     FROM starsInMovies NATURAL JOIN avgRatings JOIN genreView
     WHERE id = genreView.movieId;
+    
+DROP VIEW IF EXISTS movieList;
+CREATE VIEW movieList AS
+	SELECT m.id as 'id', m.title as 'title', m.year as 'year', m.director as 'director', FORMAT(AVG(r.rating),1) 'rating',
+		SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT g.name SEPARATOR ', '), ',', 3) 'genre',
+		SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT s.name SEPARATOR ', '), ',', 3) 'stars',
+		SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT s.id SEPARATOR ', '), ',', 3) 'starsId'
+	FROM movies m JOIN ratings r JOIN genres_in_movies gin
+		JOIN genres g JOIN stars_in_movies sim JOIN stars s
+	WHERE m.id = r.movieId AND sim.starId = s.id AND sim.movieID = m.id
+		AND g.id = gin.genreId AND gin.movieId = m.id
+	GROUP BY r.movieId
+	ORDER BY AVG(r.rating) DESC;

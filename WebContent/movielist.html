@@ -9,29 +9,36 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-    <title id = "movie_title"> </title>
 </head>
-<body>
-<input type = "button" value = "Homepage" onclick = homeLink()>&ensp;
 
-<h3 id="movie_info"></h3>
-<table id=single_movie_table class="table table-striped">
+<body>
+&ensp;<input type = "button" value = "Homepage" onclick = homeLink()>
+<script>
+    function homeLink() { window.location.href = "mainpage.html"; }
+</script>
+
+<p id="page_num1" align = "center"></p>
+
+<table class="table table-striped">
     <thead>
     <tr>
+        <th>Title</th>
+        <th>Director</th>
         <th>Starring</th>
-        <th>
+        <th>Genre</th>
+        <th>Year</th>
     </tr>
     </thead>
 
-    <tbody id=single_movie_table_body></tbody>
+    <tbody id=list_table_body></tbody>
 </table>
-<script> function homeLink() { window.location.href = "mainpage.html"; } </script>
+<p id="page_num2" align = "center"></p>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
 
-<script src="single-movie.js"></script>
+<script src="movielist.js"></script>
 </body>
 
 
