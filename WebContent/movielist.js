@@ -10,9 +10,12 @@ function getParameterByName(target) {
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
-let genreName = getParameterByName('genre');
-let page = getParameterByName('page');
 let title = getParameterByName('title');
+let director = getParameterByName('director');
+let starName = getParameterByName('star');
+let genreName = getParameterByName('genre');
+let year = getParameterByName('year');
+let page = getParameterByName('page');
 
 function handleListResult(resultData)
 {
@@ -39,6 +42,7 @@ function handleListResult(resultData)
         rowHTML += "</th>";
 
         rowHTML += "<th>" + resultData[i]["movie_yr"] + "</th>";
+        rowHTML += "<th>" + resultData[i]["movie_rating"] + "</th>";
         rowHTML += "</tr>";
 
         genre_table_body.append(rowHTML);
@@ -50,26 +54,36 @@ function handleListResult(resultData)
     let prevPage = currPage - 1;
 
     if(currPage > 1)
-        pageLinks += "<a href=" + "movielist.html?title=" + title + "&genre=" + genreName + "&page=" + prevPage + ">" + "&lt;Prev" + " </a> "
+        pageLinks += "<a href="
+            + "movielist.html?title=" + title
+            +  "&director=" + director + "&star=" + starName + "&genre=" + genreName + "&year=" + year + "&page=" + prevPage + ">"
+            + "&lt;Prev" + " </a> ";
     else
-        pageLinks += "<a href=" + "movielist.html?title=" + title + "&genre=" + genreName + "&page=" + currPage + ">" + "&lt;Prev" + " </a> "
+        pageLinks += "<a href="
+            + "movielist.html?title=" + title
+            +  "&director=" + director + "&star=" + starName + "&genre=" + genreName + "&year=" + year + "&page=" + currPage + ">"
+            + "&lt;Prev" + " </a> ";
 
     if(currPage < pageCount)
-        pageLinks += "<a href=" + "movielist.html?title=" + title + "&genre=" + genreName + "&page=" + nextPage + ">" + "Next&gt;" + " </a> "
+        pageLinks += "<a href="
+            + "movielist.html?title=" + title
+            +  "&director=" + director + "&star=" + starName + "&genre=" + genreName + "&year=" + year + "&page=" + nextPage + ">"
+            + "Next&gt;" + " </a> ";
     else
-        pageLinks += "<a href=" + "movielist.html?title=" + title + "&genre=" + genreName + "&page=" + currPage + ">" + "Next&gt;" + " </a> "
+        pageLinks += "<a href="
+            + "movielist.html?title=" + title
+            +  "&director=" + director + "&star=" + starName + "&genre=" + genreName + "&year=" + year + "&page=" + currPage + ">"
+            + "Next&gt;"
+            + " </a> ";
 
 
 
     page_num1.append(pageLinks);
     page_num2.append(pageLinks);
 }
-
-
-
 jQuery.ajax({
     dataType: "json",
     method: "GET",
-    url: "api/movielist?title=" + title + "&genre=" + genreName + "&page=" + page,
+    url: "api/movielist?title=" + title +  "&director=" + director + "&star=" + starName + "&genre=" + genreName + "&year=" + year + "&page=" + page,
     success: (resultData) => handleListResult(resultData)
 });

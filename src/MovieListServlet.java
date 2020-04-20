@@ -24,9 +24,18 @@ public class MovieListServlet extends HttpServlet {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
 
-        String name = request.getParameter("genre");
         String title = request.getParameter("title");
+        String director = request.getParameter("director");
+        String star = request.getParameter("star");
+        String genre = request.getParameter("genre");
+
+        String stringYear = request.getParameter("year");
+        Integer year = 0;
+        if(!stringYear.isEmpty()) { year = Integer.parseInt(stringYear); }
+
+
         String page = request.getParameter("page");
+
         int n = Integer.parseInt(page);
 
         try {
@@ -34,17 +43,49 @@ public class MovieListServlet extends HttpServlet {
             Statement statement = dbcon.createStatement();
             Statement statementC = dbcon.createStatement();
 
-            String query = "SELECT *\n" +
-                    "FROM movielist\n" +
-                    "WHERE genre LIKE '%" + name + "%'\n" +
-                    "AND title LIKE '%" + title + "%'\n" +
-                    "LIMIT 100\n" +
-                    "OFFSET " + (n - 1) * 100 + ";";
+            String query = "";
+            String rowCount = "";
 
-            String rowCount = "SELECT count(*) as count\n" +
-                    "FROM movielist\n" +
-                    "WHERE genre LIKE '%" + name + "%'" +
-                    "AND title LIKE '%" + title + "%';";
+            if(year < 1000)
+            {
+                query = "SELECT *\n" +
+                        "FROM movielist\n" +
+                        "WHERE genre LIKE '%" + genre + "%'\n" +
+                        "AND title LIKE '%" + title + "%'\n" +
+                        "AND director LIKE '%" + director + "%'\n" +
+                        "AND stars LIKE '%" + star + "%'\n" +
+                        "LIMIT 100\n" +
+                        "OFFSET " + (n - 1) * 100 + ";";
+
+                rowCount = "SELECT count(*) as count\n" +
+                        "FROM movielist\n" +
+                        "WHERE genre LIKE '%" + genre + "%'" +
+                        "AND director LIKE '%" + director + "%'\n" +
+                        "AND stars LIKE '%" + star + "%'\n" +
+                        "AND title LIKE '%" + title + "%';";
+            }
+            else
+            {
+                query = "SELECT *\n" +
+                        "FROM movielist\n" +
+                        "WHERE genre LIKE '%" + genre + "%'\n" +
+                        "AND title LIKE '%" + title + "%'\n" +
+                        "AND director LIKE '%" + director + "%'\n" +
+                        "AND stars LIKE '%" + star + "%'\n" +
+                        "AND year = " + year + "\n" +
+                        "LIMIT 100\n" +
+                        "OFFSET " + (n - 1) * 100 + ";";
+
+                rowCount = "SELECT count(*) as count\n" +
+                        "FROM movielist\n" +
+                        "WHERE genre LIKE '%" + genre + "%'" +
+                        "AND director LIKE '%" + director + "%'\n" +
+                        "AND stars LIKE '%" + star + "%'\n" +
+                        "AND year = " + year + "\n" +
+                        "AND title LIKE '%" + title + "%';";
+            }
+
+
 
             String query2 = "SELECT s.name FROM stars s WHERE id = ?";
 
@@ -70,6 +111,7 @@ public class MovieListServlet extends HttpServlet {
                 String movie_dir = rs.getString("director");
                 String movie_starsId = rs.getString("starsId");
                 String movie_yr = rs.getString("year");
+                String movie_rating = rs.getString("rating");
 
                 String parseId[] = rs.getString("starsId").split(", ");
 
@@ -95,6 +137,7 @@ public class MovieListServlet extends HttpServlet {
                 jsonObject.addProperty("movie_dir", movie_dir);
                 jsonObject.addProperty("movie_starsId", movie_starsId);
                 jsonObject.addProperty("movie_yr", movie_yr);
+                jsonObject.addProperty("movie_rating", movie_rating);
 
                 jsonArray.add(jsonObject);
             }
