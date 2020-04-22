@@ -10,19 +10,23 @@ function getParameterByName(target) {
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
+// Grab all URL parameters
 let title = getParameterByName('title');
 let director = getParameterByName('director');
 let starName = getParameterByName('star');
 let genreName = getParameterByName('genre');
 let year = getParameterByName('year');
 let page = getParameterByName('page');
+let resultCount = getParameterByName('count');
+let sort1 = getParameterByName('sort1');
+let sort2 = getParameterByName('sort2');
 
 function handleListResult(resultData)
 {
     let genre_table_body = jQuery("#list_table_body");
     let page_num1 = jQuery("#page_num1");
     let page_num2 = jQuery("#page_num2");
-    let pageCount = Math.ceil(parseInt(resultData[0]["query_count"], 10)/100);
+    let pageCount = Math.ceil(parseInt(resultData[0]["query_count"], 10)/resultCount);
 
     for(let i = 1; i < resultData.length; i++)
     {
@@ -36,9 +40,9 @@ function handleListResult(resultData)
             + '<a href="single-star.html?id=' + resultData[i]['star_id2'] + '">' + resultData[i]["star_name2"] + '</a>' + "</th>";
 
         rowHTML += "<th>";
-        rowHTML += '<a href="movielist.html?title=&genre=' + genres[0] + '&page=1' + '">' + genres[0] + '</a>';
+        rowHTML += "<a href=" + "movielist.html?title=&director=&star=&genre="+ genres[0] + "&year=&page=1>" + genres[0] + "</a>";
         for(let i = 1; i < genres.length; i++)
-            rowHTML += '<a href="movielist.html?title=&genre=' + genres[i] + '&page=1' + '">, ' + genres[i] + '</a>';
+            rowHTML += "<a href=" + "movielist.html?title=&director=&star=&genre="+ genres[i] + "&year=&page=1>, " + genres[i] + "</a>";
         rowHTML += "</th>";
 
         rowHTML += "<th>" + resultData[i]["movie_yr"] + "</th>";
@@ -56,27 +60,20 @@ function handleListResult(resultData)
     if(currPage > 1)
         pageLinks += "<a href="
             + "movielist.html?title=" + title
-            +  "&director=" + director + "&star=" + starName + "&genre=" + genreName + "&year=" + year + "&page=" + prevPage + ">"
-            + "&lt;Prev" + " </a> ";
+            + "&director=" + director + "&star=" + starName + "&genre=" + genreName + "&year=" + year
+            + "&page=" + prevPage + "&count=" + resultCount + "&sort1=" + sort1 + "&sort2=" + sort2 + ">"
+            + "&lt;Prev " + " </a> ";
     else
-        pageLinks += "<a href="
-            + "movielist.html?title=" + title
-            +  "&director=" + director + "&star=" + starName + "&genre=" + genreName + "&year=" + year + "&page=" + currPage + ">"
-            + "&lt;Prev" + " </a> ";
+        pageLinks += "<a>" + "&lt;Prev " + "</a>" ;
 
     if(currPage < pageCount)
         pageLinks += "<a href="
             + "movielist.html?title=" + title
-            +  "&director=" + director + "&star=" + starName + "&genre=" + genreName + "&year=" + year + "&page=" + nextPage + ">"
+            + "&director=" + director + "&star=" + starName + "&genre=" + genreName + "&year=" + year
+            + "&page=" + nextPage + "&count=" + resultCount + "&sort1=" + sort1 + "&sort2=" + sort2 + ">"
             + "Next&gt;" + " </a> ";
     else
-        pageLinks += "<a href="
-            + "movielist.html?title=" + title
-            +  "&director=" + director + "&star=" + starName + "&genre=" + genreName + "&year=" + year + "&page=" + currPage + ">"
-            + "Next&gt;"
-            + " </a> ";
-
-
+        pageLinks += "<a>" + "Next&gt;" + "</a>" ;
 
     page_num1.append(pageLinks);
     page_num2.append(pageLinks);
@@ -84,6 +81,7 @@ function handleListResult(resultData)
 jQuery.ajax({
     dataType: "json",
     method: "GET",
-    url: "api/movielist?title=" + title +  "&director=" + director + "&star=" + starName + "&genre=" + genreName + "&year=" + year + "&page=" + page,
+    url: "api/movielist?title=" + title +  "&director=" + director + "&star=" + starName + "&genre=" + genreName + "&year=" + year
+        + "&page=" + page + "&count=" + resultCount + "&sort1=" + sort1 + "&sort2=" + sort2,
     success: (resultData) => handleListResult(resultData)
 });
