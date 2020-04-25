@@ -7,6 +7,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -14,8 +15,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-
-
+import java.util.ArrayList;
 
 @WebServlet(name = "MovieListServlet", urlPatterns = "/api/movielist")
 public class MovieListServlet extends HttpServlet {
@@ -24,11 +24,13 @@ public class MovieListServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
+
+        // JsonArray is converted to a string, and written out to response, which is send to a specified javascript file
         PrintWriter out = response.getWriter();
 
         String title = request.getParameter("title");
-        if(title.indexOf('@') != -1) { title = title.replace('@','%');}
-        else{ title = '%' + title + '%';}
+        if(title.indexOf('<') != -1) { title = title.replace('<','%');}
+        else if (!title.equals(">")){ title = '%' + title + '%';}
 
         String stringYear = request.getParameter("year");
         int year = 0;
@@ -37,18 +39,14 @@ public class MovieListServlet extends HttpServlet {
         String stringCount = request.getParameter("count");
         int resultCount = Integer.parseInt(stringCount);
 
+        String page = request.getParameter("page");
+        int pageNum = Integer.parseInt(page);
+
         String director = request.getParameter("director");
         String star = request.getParameter("star");
         String genre = request.getParameter("genre");
         String sort1 = getSort(request.getParameter("sort1"));
         String sort2 = getSort(request.getParameter("sort2"));
-
-
-
-
-
-        String page = request.getParameter("page");
-        int n = Integer.parseInt(page);
 
         try {
             Connection dbcon = dataSource.getConnection();
@@ -58,54 +56,94 @@ public class MovieListServlet extends HttpServlet {
             String query = "";
             String rowCount = "";
 
-            String queryzzz = "SELECT *\n" +
-                    "FROM movielist\n" +
-                    "ORDER BY rating ASC, title DESC;";
-
-            if(year < 1000)
+            if(year < 1000 || year > 9999)
             {
-                query = "SELECT *\n" +
-                        "FROM movielist\n" +
-                        "WHERE genre LIKE '%" + genre + "%'\n" +
-                        "AND title LIKE '" + title + "'\n" +
-                        "AND director LIKE '%" + director + "%'\n" +
-                        "AND stars LIKE '%" + star + "%'\n" +
-                        "ORDER BY " + sort1 + ", "+ sort2 + "\n" +
-                        "LIMIT " + resultCount + "\n" +
-                        "OFFSET " + (n - 1) * resultCount + ";";
+                if(!title.equals(">")) {
+                    query = "SELECT *\n" +
+                            "FROM movielist\n" +
+                            "WHERE genre LIKE '%" + genre + "%'\n" +
+                            "AND title LIKE '" + title + "'\n" +
+                            "AND director LIKE '%" + director + "%'\n" +
+                            "AND stars LIKE '%" + star + "%'\n" +
+                            "ORDER BY " + sort1 + ", " + sort2 + "\n" +
+                            "LIMIT " + resultCount + "\n" +
+                            "OFFSET " + (pageNum - 1) * resultCount + ";";
 
-                rowCount = "SELECT count(*) as count\n" +
-                        "FROM movielist\n" +
-                        "WHERE genre LIKE '%" + genre + "%'" +
-                        "AND director LIKE '%" + director + "%'\n" +
-                        "AND stars LIKE '%" + star + "%'\n" +
-                        "AND title LIKE '" + title + "';";
+                    rowCount = "SELECT count(*) as count\n" +
+                            "FROM movielist\n" +
+                            "WHERE genre LIKE '%" + genre + "%'" +
+                            "AND director LIKE '%" + director + "%'\n" +
+                            "AND stars LIKE '%" + star + "%'\n" +
+                            "AND title LIKE '" + title + "';";
+                }
+                else
+                {
+                    query = "SELECT *\n" +
+                            "FROM movielist\n" +
+                            "WHERE genre LIKE '%" + genre + "%'\n" +
+                            "AND NOT REGEXP_LIKE(title, '^[a-z0-9A-Z]') \n" +
+                            "AND director LIKE '%" + director + "%'\n" +
+                            "AND stars LIKE '%" + star + "%'\n" +
+                            "ORDER BY " + sort1 + ", " + sort2 + "\n" +
+                            "LIMIT " + resultCount + "\n" +
+                            "OFFSET " + (pageNum - 1) * resultCount + ";";
+
+                    rowCount = "SELECT count(*) as count\n" +
+                            "FROM movielist\n" +
+                            "WHERE genre LIKE '%" + genre + "%'" +
+                            "AND director LIKE '%" + director + "%'\n" +
+                            "AND stars LIKE '%" + star + "%'\n" +
+                            "AND NOT REGEXP_LIKE(title, '^[a-z0-9A-Z]');";
+                }
             }
             else
             {
-                query = "SELECT *\n" +
-                        "FROM movielist\n" +
-                        "WHERE genre LIKE '%" + genre + "%'\n" +
-                        "AND title LIKE '" + title + "'\n" +
-                        "AND director LIKE '%" + director + "%'\n" +
-                        "AND stars LIKE '%" + star + "%'\n" +
-                        "AND year = " + year + "\n" +
-                        "ORDER BY " + sort1 + ", "+ sort2 + "\n" +
-                        "LIMIT " + resultCount + "\n" +
-                        "OFFSET " + (n - 1) * resultCount + ";";
+                if(!title.equals(">")) {
+                    query = "SELECT *\n" +
+                            "FROM movielist\n" +
+                            "WHERE genre LIKE '%" + genre + "%'\n" +
+                            "AND title LIKE '" + title + "'\n" +
+                            "AND director LIKE '%" + director + "%'\n" +
+                            "AND stars LIKE '%" + star + "%'\n" +
+                            "AND year = " + year + "\n" +
+                            "ORDER BY " + sort1 + ", " + sort2 + "\n" +
+                            "LIMIT " + resultCount + "\n" +
+                            "OFFSET " + (pageNum - 1) * resultCount + ";";
 
-                rowCount = "SELECT *\n" +
-                        "FROM movielist\n" +
-                        "WHERE genre LIKE '%" + genre + "%'\n" +
-                        "AND title LIKE '" + title + "'\n" +
-                        "AND director LIKE '%" + director + "%'\n" +
-                        "AND stars LIKE '%" + star + "%'\n" +
-                        "AND year = " + year + ";";
+                    rowCount = "SELECT *\n" +
+                            "FROM movielist\n" +
+                            "WHERE genre LIKE '%" + genre + "%'\n" +
+                            "AND title LIKE '" + title + "'\n" +
+                            "AND director LIKE '%" + director + "%'\n" +
+                            "AND stars LIKE '%" + star + "%'\n" +
+                            "AND year = " + year + ";";
+                }
+                else
+                {
+                    query = "SELECT *\n" +
+                            "FROM movielist\n" +
+                            "WHERE genre LIKE '%" + genre + "%'\n" +
+                            "AND NOT REGEXP_LIKE(title, '^[a-z0-9A-Z]')\n" +
+                            "AND director LIKE '%" + director + "%'\n" +
+                            "AND stars LIKE '%" + star + "%'\n" +
+                            "AND year = " + year + "\n" +
+                            "ORDER BY " + sort1 + ", " + sort2 + "\n" +
+                            "LIMIT " + resultCount + "\n" +
+                            "OFFSET " + (pageNum - 1) * resultCount + ";";
+
+                    rowCount = "SELECT *\n" +
+                            "FROM movielist\n" +
+                            "WHERE genre LIKE '%" + genre + "%'\n" +
+                            "AND NOT REGEXP_LIKE(title, '^[a-z0-9A-Z]')\n" +
+                            "AND director LIKE '%" + director + "%'\n" +
+                            "AND stars LIKE '%" + star + "%'\n" +
+                            "AND year = " + year + ";";
+                }
             }
 
 
 
-            String query2 = "SELECT s.name FROM stars s WHERE id = ?";
+            String matchId = "SELECT s.name FROM stars s WHERE id = ?";
 
             ResultSet queryCount = statementC.executeQuery(rowCount);
             ResultSet rs = statement.executeQuery(query);
@@ -137,7 +175,7 @@ public class MovieListServlet extends HttpServlet {
 
                 for(int i = 0; i < parseId.length; i++)
                 {
-                    PreparedStatement statement2 = dbcon.prepareStatement(query2);
+                    PreparedStatement statement2 = dbcon.prepareStatement(matchId);
 
                     statement2.setString(1, parseId[i]);
                     ResultSet rs2 = statement2.executeQuery();

@@ -57,11 +57,11 @@ public class LoginServlet extends HttpServlet {
                     {
                         responseJsonObject.addProperty("message", "User " + username + " does not exist.");
                     }
-                     else {
+                    else {
                         responseJsonObject.addProperty("message", "Invalid password, please try again.");
                     }
                 }
-            response.getWriter().write(responseJsonObject.toString());
+                response.getWriter().write(responseJsonObject.toString());
             }
         } catch (SQLException e) {
             e.printStackTrace();

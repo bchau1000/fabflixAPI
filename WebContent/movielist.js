@@ -21,11 +21,10 @@ let resultCount = getParameterByName('count');
 let sort1 = getParameterByName('sort1');
 let sort2 = getParameterByName('sort2');
 
+// Generates the table based on query results
 function handleListResult(resultData)
 {
     let genre_table_body = jQuery("#list_table_body");
-    let page_num1 = jQuery("#page_num1");
-    let page_num2 = jQuery("#page_num2");
     let pageCount = Math.ceil(parseInt(resultData[0]["query_count"], 10)/resultCount);
 
     for(let i = 1; i < resultData.length; i++)
@@ -40,28 +39,34 @@ function handleListResult(resultData)
             + '<a href="single-star.html?id=' + resultData[i]['star_id2'] + '">' + resultData[i]["star_name2"] + '</a>' + "</th>";
 
         rowHTML += "<th>";
-        rowHTML += "<a href=" + "movielist.html?title=&director=&star=&genre="+ genres[0] + "&year=&page=1>" + genres[0] + "</a>";
+        rowHTML += "<a href=" + "movielist.html?title=&director=&star=&genre="+ genres[0] + "&year=&page=1&count=50&sort1=ratingD&sort2=titleA>" + genres[0] + "</a>";
         for(let i = 1; i < genres.length; i++)
-            rowHTML += "<a href=" + "movielist.html?title=&director=&star=&genre="+ genres[i] + "&year=&page=1>, " + genres[i] + "</a>";
+            rowHTML += "<a href=" + "movielist.html?title=&director=&star=&genre="+ genres[i] + "&year=&page=1&count=50&sort1=ratingD&sort2=titleA>, " + genres[i] + "</a>";
         rowHTML += "</th>";
 
         rowHTML += "<th>" + resultData[i]["movie_yr"] + "</th>";
         rowHTML += "<th>" + resultData[i]["movie_rating"] + "</th>";
+        rowHTML += '<th><input type="button" onClick="handleCart(\'' + resultData[i]["movie_id"] + '\', \'' + resultData[i]['movie_title']+ '\')" value = "Add" /></th>'
+
         rowHTML += "</tr>";
 
         genre_table_body.append(rowHTML);
     }
 
-    let pageLinks = "";
+    handlePageCount(pageCount);
+}
+
+// Creates prev/next buttons
+function handlePageCount(pageCount)
+{
     let currPage = parseInt(page, 10);
-    let nextPage = currPage + 1;
-    let prevPage = currPage - 1;
+    let pageLinks = "";
 
     if(currPage > 1)
         pageLinks += "<a href="
             + "movielist.html?title=" + title
             + "&director=" + director + "&star=" + starName + "&genre=" + genreName + "&year=" + year
-            + "&page=" + prevPage + "&count=" + resultCount + "&sort1=" + sort1 + "&sort2=" + sort2 + ">"
+            + "&page=" + (currPage - 1) + "&count=" + resultCount + "&sort1=" + sort1 + "&sort2=" + sort2 + ">"
             + "&lt;Prev " + " </a> ";
     else
         pageLinks += "<a>" + "&lt;Prev " + "</a>" ;
@@ -70,14 +75,24 @@ function handleListResult(resultData)
         pageLinks += "<a href="
             + "movielist.html?title=" + title
             + "&director=" + director + "&star=" + starName + "&genre=" + genreName + "&year=" + year
-            + "&page=" + nextPage + "&count=" + resultCount + "&sort1=" + sort1 + "&sort2=" + sort2 + ">"
+            + "&page=" + (currPage + 1) + "&count=" + resultCount + "&sort1=" + sort1 + "&sort2=" + sort2 + ">"
             + "Next&gt;" + " </a> ";
     else
         pageLinks += "<a>" + "Next&gt;" + "</a>" ;
 
-    page_num1.append(pageLinks);
-    page_num2.append(pageLinks);
+    jQuery("#page_top").append(pageLinks);
+    jQuery("#page_bottom").append(pageLinks);
 }
+
+function handleCart(retrieveId, retrieveTitle)
+{
+    alert('Added ' + retrieveTitle + " to your cart.");
+    $.ajax("api/shoppinglist", {
+        method: "POST",
+        data:"item=" + retrieveId
+    });
+}
+
 jQuery.ajax({
     dataType: "json",
     method: "GET",

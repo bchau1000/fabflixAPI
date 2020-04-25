@@ -13,6 +13,7 @@
 </head>
 <body>
 <input type = "button" value = "Homepage" onclick = homeLink()>&ensp;
+<input type = "button" value = "Shopping Cart" onclick = cartLink()>
 
 <h3 id="star_info"></h3>
 <table id=movie_table class="table table-striped">
@@ -28,7 +29,10 @@
     <tbody id=movie_table_body></tbody>
 </table>
 
-<script> function homeLink() { window.location.href = "mainpage.html"; } </script>
+<script>
+    function homeLink() { window.location.href = "mainpage.html"; }
+    function cartLink() { window.location.href = "shoppinglist.html"; }
+</script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>

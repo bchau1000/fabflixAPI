@@ -17,6 +17,9 @@ function handleResult(resultData) {
 
     let movieInfoElement = jQuery("#movie_info");
 
+    let addButton = jQuery("#addbutton");
+    addButton.append('<input type="button" onClick="handleCart(\'' + resultData[0]["movie_id"] + '\', \'' + resultData[0]['movie_title']+ '\')" value = "Add" />');
+
     movieInfoElement.append(
         "<p>Title: " + resultData[0]["movie_title"] + "</p>" +
         "<p>Year: " + resultData[0]["movie_year"] + "</p>" +
@@ -29,6 +32,7 @@ function handleResult(resultData) {
 
     let movieTableBodyElement = jQuery("#single_movie_table_body");
 
+
     for (let i = 0; i < resultData.length; i++) {
         let rowHTML = "";
         rowHTML += "<tr>";
@@ -37,6 +41,14 @@ function handleResult(resultData) {
 
         movieTableBodyElement.append(rowHTML);
     }
+}
+function handleCart(retrieveId, retrieveTitle)
+{
+    alert('Added ' + retrieveTitle + " to your cart.");
+    $.ajax("api/shoppinglist", {
+        method: "POST",
+        data:"item=" + retrieveId
+    });
 }
 
 let movieId = getParameterByName('id');

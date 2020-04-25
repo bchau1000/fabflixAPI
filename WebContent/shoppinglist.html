@@ -1,52 +1,30 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-
-    <meta charset="utf-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
+    <meta charset="UTF-8">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
+    <title>Shopping Cart</title>
 </head>
 
 <body>
 <input type = "button" value = "Homepage" onclick = homeLink()>&ensp;
 <input type = "button" value = "Shopping Cart" onclick = cartLink()>
 
-<p id = "testresult"> </p>
+<ul id = "cart" class="list-group">
 
-<p id="page_top" align = "center"></p>
-<table class="table table-striped">
-    <thead>
-    <tr>
-        <th>Title</th>
-        <th>Director</th>
-        <th>Starring</th>
-        <th>Genre</th>
-        <th>Year</th>
-        <th>Rating</th>
-        <th>Add</th>
-    </tr>
-    </thead>
+</ul>
 
-    <tbody id=list_table_body></tbody>
-</table>
-<p id="page_bottom" align = "center"></p>
+</body>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
-
-<script src="movielist.js"></script>
+<script src="shoppinglist.js"></script>
 <script>
     function homeLink() { window.location.href = "mainpage.html"; }
     function cartLink() { window.location.href = "shoppinglist.html"; }
 </script>
-
-</body>
-
 
 </html>

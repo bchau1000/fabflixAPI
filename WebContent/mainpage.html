@@ -8,7 +8,8 @@
 </head>
 
 <body>
-&ensp;<input type = "button" value = "Homepage" onclick = homeLink()>&ensp;
+<input type = "button" value = "Homepage" onclick = homeLink()>&ensp;
+<input type = "button" value = "Shopping Cart" onclick = cartLink()>
 <br>
 
 <form name = "search_form" method = "get" action = "movielist.html">
@@ -35,7 +36,7 @@
 
     <label><b>Release Year:</b></label>
     <label>
-        <input placeholder="Enter a Year" name="year" type="text">
+        <input placeholder="Enter a Year" name="year" type="number">
     </label>
     <br>
 
@@ -52,13 +53,14 @@
 
 </body>
 
-<script>
-    function homeLink() { window.location.href = "mainpage.html"; }
-</script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
 <script src="mainpage.js"></script>
+<script>
+    function homeLink() { window.location.href = "mainpage.html"; }
+    function cartLink() { window.location.href = "shoppinglist.html"; }
+</script>
 
 </html>

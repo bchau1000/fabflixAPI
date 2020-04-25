@@ -59,8 +59,8 @@ public class SingleMovieServlet extends HttpServlet {
 				jsonArray.add(jsonObject);
 			}
 
-            out.write(jsonArray.toString());
-            response.setStatus(200);
+			out.write(jsonArray.toString());
+			response.setStatus(200);
 
 			rs.close();
 			statement.close();
