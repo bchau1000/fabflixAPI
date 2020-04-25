@@ -1,7 +1,6 @@
 function handleGenreResult(resultData)
 {
     let genre_list = jQuery("#genre_list");
-
     for(let i = 0; i < resultData.length; i++)
     {
         genre_list.append("<a href=" + "movielist.html?title=&director=&star=&genre=" + resultData[i]["genre_name"] + "&year=&page=1&count=50&sort1=ratingD&sort2=titleA>" + resultData[i]["genre_name"] + "</a>");
@@ -21,7 +20,7 @@ function handleGenreResult(resultData)
         genre_list.append("<br>");
     }
 
-    genre_list.append("<a href=" + "movielist.html?title=" + '&gt;' + "&director=&star=&genre=&year=&page=1&count=50&sort1=ratingD&sort2=titleA>" + '*' + "</a>");
+    genre_list.append("<a href=" + "movielist.html?title=" + '~' + "&director=&star=&genre=&year=&page=1&count=50&sort1=ratingD&sort2=titleA>" + '*' + "</a>");
 }
 
 jQuery.ajax({

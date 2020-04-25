@@ -89,7 +89,7 @@ function handleCart(retrieveId, retrieveTitle)
     alert('Added ' + retrieveTitle + " to your cart.");
     $.ajax("api/shoppinglist", {
         method: "POST",
-        data:"item=" + retrieveId
+        data:"item=" + retrieveId + "&title=" + retrieveTitle +"&op=add"
     });
 }
 

@@ -29,8 +29,8 @@ public class MovieListServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         String title = request.getParameter("title");
-        if(title.indexOf('<') != -1) { title = title.replace('<','%');}
-        else if (!title.equals(">")){ title = '%' + title + '%';}
+        if(title.indexOf('<') != -1) { title = title.replace('<','%');} // For starts with a given char
+        else if (!title.equals("~")){ title = '%' + title + '%';}
 
         String stringYear = request.getParameter("year");
         int year = 0;
@@ -58,7 +58,7 @@ public class MovieListServlet extends HttpServlet {
 
             if(year < 1000 || year > 9999)
             {
-                if(!title.equals(">")) {
+                if(!title.equals("~")) {
                     query = "SELECT *\n" +
                             "FROM movielist\n" +
                             "WHERE genre LIKE '%" + genre + "%'\n" +
@@ -81,7 +81,7 @@ public class MovieListServlet extends HttpServlet {
                     query = "SELECT *\n" +
                             "FROM movielist\n" +
                             "WHERE genre LIKE '%" + genre + "%'\n" +
-                            "AND NOT REGEXP_LIKE(title, '^[a-z0-9A-Z]') \n" +
+                            "AND title regexp '^[^a-z0-9A-Z]'\n" +
                             "AND director LIKE '%" + director + "%'\n" +
                             "AND stars LIKE '%" + star + "%'\n" +
                             "ORDER BY " + sort1 + ", " + sort2 + "\n" +
@@ -93,12 +93,12 @@ public class MovieListServlet extends HttpServlet {
                             "WHERE genre LIKE '%" + genre + "%'" +
                             "AND director LIKE '%" + director + "%'\n" +
                             "AND stars LIKE '%" + star + "%'\n" +
-                            "AND NOT REGEXP_LIKE(title, '^[a-z0-9A-Z]');";
+                            "AND title regexp '^[^a-z0-9A-Z]';";
                 }
             }
             else
             {
-                if(!title.equals(">")) {
+                if(!title.equals("~")) {
                     query = "SELECT *\n" +
                             "FROM movielist\n" +
                             "WHERE genre LIKE '%" + genre + "%'\n" +
@@ -110,7 +110,7 @@ public class MovieListServlet extends HttpServlet {
                             "LIMIT " + resultCount + "\n" +
                             "OFFSET " + (pageNum - 1) * resultCount + ";";
 
-                    rowCount = "SELECT *\n" +
+                    rowCount = "SELECT count(*) as count\n" +
                             "FROM movielist\n" +
                             "WHERE genre LIKE '%" + genre + "%'\n" +
                             "AND title LIKE '" + title + "'\n" +
@@ -123,7 +123,7 @@ public class MovieListServlet extends HttpServlet {
                     query = "SELECT *\n" +
                             "FROM movielist\n" +
                             "WHERE genre LIKE '%" + genre + "%'\n" +
-                            "AND NOT REGEXP_LIKE(title, '^[a-z0-9A-Z]')\n" +
+                            "AND title regexp '^[^a-z0-9A-Z]'\n" +
                             "AND director LIKE '%" + director + "%'\n" +
                             "AND stars LIKE '%" + star + "%'\n" +
                             "AND year = " + year + "\n" +
@@ -131,10 +131,10 @@ public class MovieListServlet extends HttpServlet {
                             "LIMIT " + resultCount + "\n" +
                             "OFFSET " + (pageNum - 1) * resultCount + ";";
 
-                    rowCount = "SELECT *\n" +
+                    rowCount = "SELECT count(*) as count\n" +
                             "FROM movielist\n" +
                             "WHERE genre LIKE '%" + genre + "%'\n" +
-                            "AND NOT REGEXP_LIKE(title, '^[a-z0-9A-Z]')\n" +
+                            "AND title regexp '^[^a-z0-9A-Z]'\n" +
                             "AND director LIKE '%" + director + "%'\n" +
                             "AND stars LIKE '%" + star + "%'\n" +
                             "AND year = " + year + ";";

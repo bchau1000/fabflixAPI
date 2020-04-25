@@ -1,27 +1,36 @@
-let cart = jQuery("#cart");
+let cart = jQuery("#cart_table_body");
 
-function handleCartData(resultDataString)
+function handleCartData(resultData)
 {
-    let resultArray = resultDataString.split(',');
-    let results = ""
+    let resultArray = resultData.split('|');
+    let results = "";
 
-    for(let i = 0; i < resultArray.length; i++)
-        results += '<li class="list-group-item">' + resultArray[i] + '</li>';
+    if(resultArray[0] != "") {
+        for (let i = 0; i < resultArray.length - 1; i+=2) {
+            results += '<tr>';
+            results += '<th>' + resultArray[i] + '</th>';
+            results += '<th>' + resultArray[i + 1] + '</th>';
+            results += '<th>' + '<input type="button" onClick="updateList(\'' + resultArray[i] + '\', \'add\',\'' + resultArray[i + 1] + '\')" value = "Add" />' + '</th>';
+            results += '<th>' + '<input type="button" onClick="updateList(\'' + resultArray[i] + '\', \'rem\',\'' + resultArray[i + 1] + '\')" value = "Remove" />' + '</th>';
+            results += '</tr>'
+        }
+    }
 
+    cart.html("");
     cart.append(results);
 }
-function removeItem()
-{
-    // to do
-}
 
-function incrItem()
+function updateList(itemId, oper, title)
 {
-    // to do
+    $.ajax("api/shoppinglist", {
+        method: "POST",
+        data:"item=" + itemId + "&title=" + title + "&op=" + oper,
+        success: handleCartData
+    });
 }
 
 $.ajax("api/shoppinglist", {
     method: "POST",
-    data:"item=",
+    data:"item=&title=&op=none",
     success: handleCartData
 });
