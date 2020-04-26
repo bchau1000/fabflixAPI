@@ -101,7 +101,6 @@ public class ShoppingListServlet extends HttpServlet {
                 }
             }
         }
-
         response.getWriter().write(String.join("|", previousItems));
     }
 }

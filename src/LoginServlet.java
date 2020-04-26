@@ -35,6 +35,7 @@ public class LoginServlet extends HttpServlet {
             {
                 String email = rs1.getString("email");
                 String pass = rs1.getString("password");
+                String id = rs1.getString("id");
 
         /* This example only allows username/password to be test/test
         /  in the real project, you should talk to the database to verify username/password
@@ -43,7 +44,9 @@ public class LoginServlet extends HttpServlet {
                 if (username.equals(email) && password.equals(pass)) {
                     // Login success
                     // set this user into the session
-                    request.getSession().setAttribute("user", new User(username)); //!!!IMPORTANT USER CLASS
+                    User newUser = new User(username, id);
+                    request.getSession().setAttribute("user", newUser); //!!!IMPORTANT USER CLASS
+                    request.getSession().setAttribute("custSessionId", newUser.getId());
 
                     responseJsonObject.addProperty("status", "success");
                     responseJsonObject.addProperty("message", "success");

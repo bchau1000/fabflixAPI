@@ -1,4 +1,5 @@
 let cart = jQuery("#cart_table_body");
+let checkout = jQuery("#checkout");
 
 function handleCartData(resultData)
 {
@@ -35,7 +36,11 @@ function handleCartData(resultData)
     console.log("total = " + total);
 
     cart.html("");
+    checkout.html("");
     cart.append(results);
+
+    if(resultArray[0] != "")
+        checkout.append("<input class = \"btn btn-success\" type = \"button\" value = \"Checkout\" onclick = checkoutLink() style = \"float: left;\">")
 }
 
 function updateList(itemId, oper, title)

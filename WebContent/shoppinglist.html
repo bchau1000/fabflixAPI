@@ -9,7 +9,7 @@
 
 <body>
 <input type = "button" value = "Homepage" onclick = homeLink()>&ensp;
-<input type = "button" value = "Shopping Cart" onclick = cartLink()>
+<input type = "button" value = "Checkout" onclick = checkoutLink() style = "float: right;">
 
 <table class="table table-striped">
     <thead>
@@ -22,6 +22,7 @@
 
     <tbody id=cart_table_body></tbody>
 </table>
+<p id = "checkout"></p>
 </body>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -31,7 +32,7 @@
 <script src="shoppinglist.js"></script>
 <script>
     function homeLink() { window.location.href = "mainpage.html"; }
-    function cartLink() { window.location.href = "shoppinglist.html"; }
+    function checkoutLink() { window.location.href = "checkoutpage.html"; }
 </script>
 
 </html>
