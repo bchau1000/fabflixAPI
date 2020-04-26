@@ -41,26 +41,61 @@ public class ShoppingListServlet extends HttpServlet {
                 previousItems = new ArrayList<>();
                 previousItems.add(item);
                 previousItems.add(title);
+                previousItems.add("1");
                 session.setAttribute("previousItems", previousItems);
             } else {
                 synchronized (previousItems) {
+                    int i = 0;
+                    boolean found = false;
+                    int size = previousItems.size() - 2;
+
+                    while(!found && i < size)
+                    {
+                        if (previousItems.get(i).equals(item))
+                            found = true;
+                        else
+                            i += 3;
+                    }
                     if(oper.equals("add")) {
-                        previousItems.add(item);
-                        previousItems.add(title);
+                        if(found)
+                        {
+                            int count = Integer.parseInt(previousItems.get(i + 2));
+                            count++;
+
+                            previousItems.set(i + 2, "" + count + "");
+                        }
+                        else
+                        {
+                            previousItems.add(item);
+                            previousItems.add(title);
+                            previousItems.add("1");
+                        }
                     }
                     else if(oper.equals("rem"))
                     {
-                        int i = 0;
-                        boolean found = false;
-                        int size = previousItems.size() - 1;
-                        while(!found && i < size)
+                        if(found)
                         {
-                            if(previousItems.get(i).equals(item)) {
-                                previousItems.remove(i);
-                                previousItems.remove(i);
-                                found = true;
+                            int count = Integer.parseInt(previousItems.get(i + 2));
+                            if(count > 1)
+                            {
+                                count--;
+                                previousItems.set(i + 2, "" + count + "");
                             }
-                            i+=2;
+                            else
+                            {
+                                previousItems.remove(i);
+                                previousItems.remove(i);
+                                previousItems.remove(i);
+                            }
+                        }
+                    }
+                    else if(oper.equals("del"))
+                    {
+                        if(found)
+                        {
+                            previousItems.remove(i);
+                            previousItems.remove(i);
+                            previousItems.remove(i);
                         }
                     }
                 }

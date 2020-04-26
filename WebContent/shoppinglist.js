@@ -4,17 +4,35 @@ function handleCartData(resultData)
 {
     let resultArray = resultData.split('|');
     let results = "";
+    let total = 0.00;
 
     if(resultArray[0] != "") {
-        for (let i = 0; i < resultArray.length - 1; i+=2) {
+        for (let i = 0; i < resultArray.length - 2; i+=3) {
             results += '<tr>';
-            results += '<th>' + resultArray[i] + '</th>';
             results += '<th>' + resultArray[i + 1] + '</th>';
-            results += '<th>' + '<input type="button" onClick="updateList(\'' + resultArray[i] + '\', \'add\',\'' + resultArray[i + 1] + '\')" value = "Add" />' + '</th>';
-            results += '<th>' + '<input type="button" onClick="updateList(\'' + resultArray[i] + '\', \'rem\',\'' + resultArray[i + 1] + '\')" value = "Remove" />' + '</th>';
+            results += '<th>' + resultArray[i + 2] + '</th>';
+            results += '<th>' + '$12.00' + '</th>';
+            results += '<th>' + '<input type="button" onClick="updateList(\'' + resultArray[i] + '\', \'add\',\'' + resultArray[i + 1] + '\')" value = "+" />' + '</th>';
+            results += '<th>' + '<input type="button" onClick="updateList(\'' + resultArray[i] + '\', \'rem\',\'' + resultArray[i + 1] + '\')" value = "-" />' + '</th>';
+            results += '<th>' + '<input type="button" onClick="updateList(\'' + resultArray[i] + '\', \'del\',\'' + resultArray[i + 1] + '\')" value = "Delete" />' + '</th>';
             results += '</tr>'
+
+            total += parseInt(resultArray[i + 2]);
         }
+        let price = total * 12;
+        results += '<tr class = "table-success">';
+        results += '<th>' + 'Total:' + '</th>';
+        results += '<th>' + total + '</th>';
+        results += '<th>' + '$' + price.toFixed(2) + '</th>';
+        results += '<th></th>';
+        results += '<th></th>';
+        results += '<th></th>';
+        results += '</tr>'
     }
+
+    for(let i = 0; i < resultArray.length; i++)
+        console.log(resultArray[i]);
+    console.log("total = " + total);
 
     cart.html("");
     cart.append(results);
