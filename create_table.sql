@@ -107,22 +107,12 @@ DROP VIEW IF EXISTS singlemovie;
 	WHERE m.id = sim.movieId AND sim.starId = sc.starIdCount AND gw.movieId = m.id AND ar.id = m.id
 	ORDER BY count DESC, name ASC;
 
-SELECT *
-FROM singlemovie
-WHERE id = 'tt0296809';
-
 DROP VIEW IF EXISTS starsInMovies;
 CREATE VIEW starsInMovies as
     SELECT m.id, m.title, m.year, m.director, s.name, s.id as 'starId'
     FROM stars s JOIN stars_in_movies sim JOIN movies m
     WHERE s.id = sim.starId and m.id = sim.movieId
     ORDER BY m.title;
-
-DROP VIEW IF EXISTS singleMovie;
-CREATE VIEW singleMovie as
-    SELECT *
-    FROM starsInMovies NATURAL JOIN avgRatings JOIN genreView
-    WHERE id = genreView.movieId;
     
 DROP VIEW IF EXISTS movielist;
 CREATE VIEW movielist AS
