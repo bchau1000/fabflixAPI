@@ -81,8 +81,7 @@ public class MovieListServlet extends HttpServlet {
                             "AND stars LIKE '%" + star + "%'\n" +
                             "AND title LIKE '" + title + "';";
                 }
-                else
-                {
+                else {
                     query = "SELECT *\n" +
                             "FROM movielist\n" +
                             "WHERE genre LIKE '%" + genre + "%'\n" +
@@ -147,8 +146,6 @@ public class MovieListServlet extends HttpServlet {
                 }
             }
 
-
-
             String matchId = "SELECT s.name FROM stars s WHERE id = ?";
 
             ResultSet queryCount = statementC.executeQuery(rowCount);
@@ -191,6 +188,19 @@ public class MovieListServlet extends HttpServlet {
 
                     jsonObject.addProperty("star_name" + i, star_name);
                     jsonObject.addProperty("star_id" + i, parseId[i]);
+                }
+
+                if(parseId.length == 1)
+                {
+                    jsonObject.addProperty("star_name1", "");
+                    jsonObject.addProperty("star_id1", "");
+                    jsonObject.addProperty("star_name2", "");
+                    jsonObject.addProperty("star_id2", "");
+                }
+                else if(parseId.length == 2)
+                {
+                    jsonObject.addProperty("star_name2", "");
+                    jsonObject.addProperty("star_id2", "");
                 }
 
                 jsonObject.addProperty("movie_id", movie_id);

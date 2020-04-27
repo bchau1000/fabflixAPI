@@ -34,9 +34,12 @@ function handleListResult(resultData)
         rowHTML += "<tr>";
         rowHTML += "<th>" + '<a href="single-movie.html?id=' + resultData[i]['movie_id'] + '">' + resultData[i]["movie_title"] + '</a>' + "</th>";
         rowHTML += "<th>" + resultData[i]["movie_dir"] + "</th>";
-        rowHTML += "<th>" + '<a href="single-star.html?id=' + resultData[i]['star_id0'] + '">' + resultData[i]["star_name0"] + '</a>' + ", "
-            + '<a href="single-star.html?id=' + resultData[i]['star_id1'] + '">' + resultData[i]["star_name1"] + '</a>' + ", "
-            + '<a href="single-star.html?id=' + resultData[i]['star_id2'] + '">' + resultData[i]["star_name2"] + '</a>' + "</th>";
+        rowHTML += "<th>" + '<a href="single-star.html?id=' + resultData[i]['star_id0'] + '">' + resultData[i]["star_name0"] + '</a>';
+
+        if(resultData[i]['star_id1'] != "")
+            rowHTML += ", " + '<a href="single-star.html?id=' + resultData[i]['star_id1'] + '">' + resultData[i]["star_name1"] + '</a>';
+        if(resultData[i]['star_id2'] != "")
+            rowHTML += ", " + '<a href="single-star.html?id=' + resultData[i]['star_id2'] + '">' + resultData[i]["star_name2"] + '</a>' + "</th>";
 
         rowHTML += "<th>";
         rowHTML += "<a href=" + "movielist.html?title=&director=&star=&genre="+ genres[0] + "&year=&page=1&count=50&sort1=ratingD&sort2=titleA>" + genres[0] + "</a>";
@@ -68,18 +71,18 @@ function handlePageCount(pageCount)
             + "movielist.html?title=" + title
             + "&director=" + director + "&star=" + starName + "&genre=" + genreName + "&year=" + year
             + "&page=" + (currPage - 1) + "&count=" + resultCount + "&sort1=" + sort1 + "&sort2=" + sort2 + ">"
-            + "&lt;Prev " + " </a> ";
+            + "Prev " + " </a> ";
     else
-        pageLinks += "<a class = \"btn btn-secondary btn-sm\">" + "&lt;Prev " + " </a> " ;
+        pageLinks += "<a class = \"btn btn-secondary btn-sm\">" + "Prev " + " </a> " ;
 
     if(currPage < pageCount)
         pageLinks += "<a class = \"btn btn-secondary btn-sm\" href="
             + "movielist.html?title=" + title
             + "&director=" + director + "&star=" + starName + "&genre=" + genreName + "&year=" + year
             + "&page=" + (currPage + 1) + "&count=" + resultCount + "&sort1=" + sort1 + "&sort2=" + sort2 + ">"
-            + "Next&gt;" + " </a> ";
+            + "Next" + " </a> ";
     else
-        pageLinks += "<a class = \"btn btn-secondary btn-sm\" >" + "Next&gt;" + " </a> " ;
+        pageLinks += "<a class = \"btn btn-secondary btn-sm\" >" + "Next" + " </a> " ;
 
     jQuery("#page_top").append(pageLinks);
     jQuery("#page_bottom").append(pageLinks);

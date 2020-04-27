@@ -32,9 +32,7 @@ public class SingleMovieServlet extends HttpServlet {
 
 		try {
 			Connection dbcon = dataSource.getConnection();
-			String query = "SELECT DISTINCT id as 'id', title as 'title', year, director as 'director', name as 'name', " +
-					"starId as 'starId', rating as 'rating', genres as 'genres' " +
-					"FROM singleMovie WHERE id = ?;";
+			String query = "SELECT * FROM singlemovie WHERE id = ?;";
 
 			PreparedStatement statement = dbcon.prepareStatement(query);
 			statement.setString(1, id);

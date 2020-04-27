@@ -2,28 +2,49 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <style>
+        .navbar-header {
+            text-align: center;
+            width: 100%;
+        }
+    </style>
     <title>Login to Fablix</title>
 </head>
 <body>
-<h2>Login to Fablix</h2>
 
-<form id="login_form" method="post" action="#">
-    <label><b>Username</b></label>
-    <label>
-        <input  placeholder="Enter Username" name="username" placeholder="Enter Username" type="text">
-    </label>
-    <br>
-    <label><b>Password</b></label>
-    <label>
-        <input placeholder="Enter Password"  name="password" placeholder="Enter Password" type="password">
-    </label>
-    <br>
-    <input type="submit" value="Login">
-</form>
+<nav class="navbar navbar-expand-sm bg-light navbar-light">
+    <div class="navbar-header">
+        <a class="navbar-brand">Welcome to Fablix!</a>
+    </div>
+</nav>
+<br>
+
+<div class="container h-100">
+    <div class="row h-100 justify-content-center align-items-center">
+        <div class="col-10 col-md-8 col-lg-6">
+            <form id="login_form" method="post" action="#">
+                <div class="form-group">
+                    <label for="inputEmail">Email address</label>
+                    <input name = "username" type="email" class="form-control" id="inputEmail" placeholder="Enter email">
+                </div>
+                <div class="form-group">
+                    <label for="inputPass">Password</label>
+                    <input name = "password" type="password" class="form-control" id="inputPass" placeholder="Password">
+                </div>
+                <input style = "text-align: center" type="submit" class="btn btn-primary" value = "Login">
+            </form>
+        </div>
+    </div>
+</div>
+
+
 
 <div id="login_error_message"></div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 <script src="loginpage.js"></script>
 
 </body>
