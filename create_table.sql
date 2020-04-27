@@ -93,7 +93,7 @@ CREATE VIEW avgRatings as
 
 DROP VIEW IF EXISTS genreView; 
 CREATE VIEW genreView as
-    SELECT SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT g.name SEPARATOR ', '), ',',3) 'genres', gin.movieId
+    SELECT GROUP_CONCAT(DISTINCT g.name SEPARATOR ', ') as 'genres', gin.movieId
     FROM genres g JOIN genres_in_movies gin
     WHERE gin.genreId= g.id
     GROUP BY gin.movieId;

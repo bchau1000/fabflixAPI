@@ -4,13 +4,86 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <title>Homepage</title>
+    <style>
+        div.dropdown-multicol2{
+            width: 30em;
+        }
+        div.dropdown-multicol2>div.dropdown-col{
+            display:inline-block;
+            width: 32%;
+        }
+
+
+        div.dropdown-multicol3{
+            width: 6em;
+        }
+
+        div.dropdown-multicol3>div.dropdown-col{
+            display:inline-block;
+            width: 40%;
+        }
+    </style>
 </head>
+<title>Homepage</title>
 
 <body>
-<input type = "button" value = "Homepage" onclick = homeLink()>&ensp;
-<input type = "button" value = "Shopping Cart" onclick = cartLink()>
-<br>
+
+<nav class="navbar navbar-expand-sm bg-light navbar-light">
+    <a class="navbar-brand" href = "mainpage.html">Fabflix</a>
+
+    <ul class="navbar-nav">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">By Title (A-Z)</a>
+            <div class="dropdown-menu dropdown-multicol2" id="titlelist">
+                <div class="dropdown-col" id = titledc1>
+                </div>
+                <div class="dropdown-col" id = titledc2>
+                </div>
+                <div class="dropdown-col" id = titledc3>
+                </div>
+                <div class="dropdown-col" id = titledc4>
+                </div>
+                <div class="dropdown-col" id = titledc5>
+                </div>
+            </div>
+        </li>
+
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">By Title (0-9)</a>
+            <div class="dropdown-menu dropdown-multicol3" id="titlenumlist">
+                <div class="dropdown-col" id = numdc1>
+                </div>
+                <div class="dropdown-col" id = numdc2>
+                </div>
+            </div>
+        </li>
+
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">By Genre</a>
+            <div class="dropdown-menu dropdown-multicol2" id="genrelist">
+                <div class="dropdown-col" id = genredc1>
+                </div>
+                <div class="dropdown-col" id = genredc2>
+                </div>
+                <div class="dropdown-col" id = genredc3>
+                </div>
+                <div class="dropdown-col" id = genredc4>
+                </div>
+                <div class="dropdown-col" id = genredc5>
+                </div>
+            </div>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="shoppinglist.html">My Cart</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="checkoutpage.html">Checkout</a>
+        </li>
+
+    </ul>
+</nav>
 
 <form name = "search_form" method = "get" action = "movielist.html">
 
@@ -58,9 +131,5 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
 <script src="mainpage.js"></script>
-<script>
-    function homeLink() { window.location.href = "mainpage.html"; }
-    function cartLink() { window.location.href = "shoppinglist.html"; }
-</script>
 
 </html>

@@ -33,8 +33,6 @@ public class MovieListServlet extends HttpServlet {
         else if (!title.equals("~")){ title = '%' + title + '%';}
 
         String stringYear = request.getParameter("year");
-        int year = 0;
-        if(!stringYear.isEmpty()) { year = Integer.parseInt(stringYear); }
 
         String stringCount = request.getParameter("count");
         int resultCount = Integer.parseInt(stringCount);
@@ -56,7 +54,7 @@ public class MovieListServlet extends HttpServlet {
             String query = "";
             String rowCount = "";
 
-            if(year < 1000 || year > 9999)
+            if(stringYear.isEmpty())
             {
                 if(!title.equals("~")) {
                     query = "SELECT *\n" +
@@ -98,6 +96,7 @@ public class MovieListServlet extends HttpServlet {
             }
             else
             {
+                int year = Integer.parseInt(stringYear);
                 if(!title.equals("~")) {
                     query = "SELECT *\n" +
                             "FROM movielist\n" +

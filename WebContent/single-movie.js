@@ -18,7 +18,7 @@ function handleResult(resultData) {
     let movieInfoElement = jQuery("#movie_info");
 
     let addButton = jQuery("#addbutton");
-    addButton.append('<input type="button" onClick="handleCart(\'' + resultData[0]["movie_id"] + '\', \'' + resultData[0]['movie_title']+ '\')" value = "Add" />');
+    addButton.append('<input class = "btn btn-secondary" type="button" onClick="handleCart(\'' + resultData[0]["movie_id"] + '\', \'' + resultData[0]['movie_title']+ '\')" value = "Add to Cart" />');
 
     movieInfoElement.append(
         "<p>Title: " + resultData[0]["movie_title"] + "</p>" +

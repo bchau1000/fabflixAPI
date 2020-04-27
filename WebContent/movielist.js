@@ -63,22 +63,22 @@ function handlePageCount(pageCount)
     let pageLinks = "";
 
     if(currPage > 1)
-        pageLinks += "<a href="
+        pageLinks += "<a class = \"btn btn-secondary btn-sm\" href="
             + "movielist.html?title=" + title
             + "&director=" + director + "&star=" + starName + "&genre=" + genreName + "&year=" + year
             + "&page=" + (currPage - 1) + "&count=" + resultCount + "&sort1=" + sort1 + "&sort2=" + sort2 + ">"
             + "&lt;Prev " + " </a> ";
     else
-        pageLinks += "<a>" + "&lt;Prev " + "</a>" ;
+        pageLinks += "<a class = \"btn btn-secondary btn-sm\">" + "&lt;Prev " + " </a> " ;
 
     if(currPage < pageCount)
-        pageLinks += "<a href="
+        pageLinks += "<a class = \"btn btn-secondary btn-sm\" href="
             + "movielist.html?title=" + title
             + "&director=" + director + "&star=" + starName + "&genre=" + genreName + "&year=" + year
             + "&page=" + (currPage + 1) + "&count=" + resultCount + "&sort1=" + sort1 + "&sort2=" + sort2 + ">"
             + "Next&gt;" + " </a> ";
     else
-        pageLinks += "<a>" + "Next&gt;" + "</a>" ;
+        pageLinks += "<a class = \"btn btn-secondary btn-sm\" >" + "Next&gt;" + " </a> " ;
 
     jQuery("#page_top").append(pageLinks);
     jQuery("#page_bottom").append(pageLinks);

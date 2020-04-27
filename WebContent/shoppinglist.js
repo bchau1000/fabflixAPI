@@ -40,7 +40,7 @@ function handleCartData(resultData)
     cart.append(results);
 
     if(resultArray[0] != "")
-        checkout.append("<input class = \"btn btn-success\" type = \"button\" value = \"Checkout\" onclick = checkoutLink() style = \"float: left;\">")
+        checkout.append("<input style = \"text-align: center\" class = \"btn btn-success\" type = \"button\" value = \"Checkout\" onclick = checkoutLink() style = \"float: left;\">")
 }
 
 function updateList(itemId, oper, title)

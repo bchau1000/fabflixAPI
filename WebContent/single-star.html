@@ -12,8 +12,20 @@
     <title id="star_info_name"></title>
 </head>
 <body>
-<input type = "button" value = "Homepage" onclick = homeLink()>&ensp;
-<input type = "button" value = "Shopping Cart" onclick = cartLink()>
+<nav class="navbar navbar-expand-sm bg-light navbar-light">
+    <a class="navbar-brand" href = "mainpage.html">Fabflix</a>
+
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" href="shoppinglist.html">My Cart</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="checkoutpage.html">Checkout</a>
+        </li>
+
+    </ul>
+</nav>
 
 <h3 id="star_info"></h3>
 <table id=movie_table class="table table-striped">
@@ -29,10 +41,6 @@
     <tbody id=movie_table_body></tbody>
 </table>
 
-<script>
-    function homeLink() { window.location.href = "mainpage.html"; }
-    function cartLink() { window.location.href = "shoppinglist.html"; }
-</script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
