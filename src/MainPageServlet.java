@@ -7,6 +7,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -23,12 +24,16 @@ public class MainPageServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
+        HttpSession session = request.getSession();
+
+
 
         try {
             Connection dbcon = dataSource.getConnection();
             Statement statement = dbcon.createStatement();
 
             String query = "SELECT * FROM genres;";
+
 
 
             ResultSet rs = statement.executeQuery(query);
@@ -48,9 +53,6 @@ public class MainPageServlet extends HttpServlet {
             out.write(jsonArray.toString());
             response.setStatus(200);
 
-            rs.close();
-            statement.close();
-            dbcon.close();
         } catch (Exception e) {
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("errorMessage", e.getMessage());

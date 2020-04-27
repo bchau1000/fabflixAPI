@@ -7,6 +7,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -25,6 +26,10 @@ public class SingleStarServlet extends HttpServlet {
 		String id = request.getParameter("id");
 		PrintWriter out = response.getWriter();
 
+		HttpSession session = request.getSession();
+
+		String currentURL = session.getAttribute("currentURL") + "";
+
 		try {
 			Connection dbcon = dataSource.getConnection();
 
@@ -37,6 +42,10 @@ public class SingleStarServlet extends HttpServlet {
 			statement.setString(1, id);
 			ResultSet rs = statement.executeQuery();
 			JsonArray jsonArray = new JsonArray();
+
+			JsonObject urlObject = new JsonObject();
+			urlObject.addProperty("currentURL", currentURL);
+			jsonArray.add(urlObject);
 
 			while (rs.next()) {
 

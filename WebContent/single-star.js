@@ -11,21 +11,22 @@ function getParameterByName(target) {
 }
 
 function handleResult(resultData) {
+    handleNavBar(resultData[0]["currentURL"]);
 
     let starInfoName = jQuery("#star_info_name");
-    starInfoName.append(resultData[0]["star_name"]);
+    starInfoName.append(resultData[1]["star_name"]);
 
     console.log("handleResult: populating star info from resultData");
     let starInfoElement = jQuery("#star_info");
 
-    starInfoElement.append("<p>Name: " + resultData[0]["star_name"] + "</p>" +
-        "<p>Date Of Birth: " + resultData[0]["star_dob"] + "</p>");
+    starInfoElement.append("<p>Name: " + resultData[1]["star_name"] + "</p>" +
+        "<p>Date Of Birth: " + resultData[1]["star_dob"] + "</p>");
 
     console.log("handleResult: populating movie table from resultData");
 
     let movieTableBodyElement = jQuery("#movie_table_body");
 
-    for (let i = 0; i < resultData.length ; i++) {
+    for (let i = 1; i < resultData.length ; i++) {
         let rowHTML = "";
         rowHTML += "<tr>";
         rowHTML += "<th>" + '<a href="single-movie.html?id=' + resultData[i]['movie_id'] + '">' + resultData[i]["movie_title"] + '</a>' + "</th>";
@@ -35,6 +36,12 @@ function handleResult(resultData) {
 
         movieTableBodyElement.append(rowHTML);
     }
+}
+
+function handleNavBar(currentURL)
+{
+    let list_jump = jQuery("#list_jump");
+    list_jump.append('<a class="nav-link" href = "' + currentURL + '">Movie List</a>');
 }
 
 let starId = getParameterByName('id');

@@ -24,13 +24,11 @@ public class MovieListServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
+        HttpSession session = request.getSession();
 
-        // JsonArray is converted to a string, and written out to response, which is send to a specified javascript file
         PrintWriter out = response.getWriter();
 
         String title = request.getParameter("title");
-        if(title.indexOf('<') != -1) { title = title.replace('<','%');} // For starts with a given char
-        else if (!title.equals("~")){ title = '%' + title + '%';}
 
         String stringYear = request.getParameter("year");
 
@@ -46,10 +44,19 @@ public class MovieListServlet extends HttpServlet {
         String sort1 = getSort(request.getParameter("sort1"));
         String sort2 = getSort(request.getParameter("sort2"));
 
+        String currentURL =  "movielist.html?title=" + title +  "&director=" + director + "&star=" + star + "&genre=" +
+                genre + "&year=" + stringYear + "&page=" + page + "&count=" +
+                stringCount + "&sort1=" + request.getParameter("sort1") + "&sort2=" + request.getParameter("sort2");
+        session.setAttribute("currentURL", currentURL);
+
+
         try {
             Connection dbcon = dataSource.getConnection();
             Statement statement = dbcon.createStatement();
             Statement statementC = dbcon.createStatement();
+
+            if(title.indexOf('<') != -1) { title = title.replace('<','%');}
+            else if (!title.equals("~")){ title = '%' + title + '%';}
 
             String query = "";
             String rowCount = "";
@@ -200,7 +207,6 @@ public class MovieListServlet extends HttpServlet {
             out.write(jsonArray.toString());
             response.setStatus(200);
 
-            rs.close();
             statement.close();
             dbcon.close();
         } catch (Exception e) {

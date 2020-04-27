@@ -1,5 +1,6 @@
 let checkout_form = jQuery("#checkout_form")
 let cart = jQuery("#cart_table_body");
+let checkoutButton = jQuery("#confirmButton");
 
 function handleList(resultData)
 {
@@ -34,14 +35,18 @@ function handleList(resultData)
     for(let i = 0; i < resultArray.length; i++)
         console.log(resultArray[i]);
     console.log("total = " + total);
-
     cart.html("");
     cart.append(results);
 }
 
 function handleCheckout(resultData)
 {
-    console.log(resultData);
+    if(resultData == "order_success")
+        window.location.href = "confirmationpage.html"
+    else if(resultData == "invalid_info")
+        alert("You entered invalid information, please try again.")
+    else if(resultData == "empty_cart")
+        alert("Your cart is empty!")
 }
 
 function handleSubmit(submitForm)

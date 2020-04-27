@@ -54,6 +54,7 @@ function handleListResult(resultData)
     }
 
     handlePageCount(pageCount);
+    handleSort();
 }
 
 // Creates prev/next buttons
@@ -84,6 +85,56 @@ function handlePageCount(pageCount)
     jQuery("#page_bottom").append(pageLinks);
 }
 
+function handleSort()
+{
+    let sortBy1 = jQuery("#sort1");
+    let sortBy2 = jQuery("#sort2");
+
+    let sortOptions1 = '';
+    sortOptions1 += '<a class = "dropdown-item" href = "movielist.html?title=' + title + '&director=' + director + '&star='
+                    + starName + '&genre=' + genreName + '&year=' + year + '&page='+ page +'&count=' + resultCount + '&sort1=ratingA&sort2=' + sort2 + '">' + 'Rating (ASC)' + '</a>';
+    sortOptions1 += '<a class = "dropdown-item" href = "movielist.html?title=' + title + '&director=' + director + '&star='
+                    + starName + '&genre=' + genreName + '&year=' + year + '&page='+ page +'&count=' + resultCount + '&sort1=ratingD&sort2=' + sort2 + '">' + 'Rating (DESC)' + '</a>';
+    sortOptions1 += '<a class = "dropdown-item" href = "movielist.html?title=' + title + '&director=' + director + '&star='
+                    + starName + '&genre=' + genreName + '&year=' + year + '&page='+ page +'&count=' + resultCount + '&sort1=titleA&sort2=' + sort2 + '">' + 'Title (ASC)' + '</a>';
+    sortOptions1 += '<a class = "dropdown-item" href = "movielist.html?title=' + title + '&director=' + director + '&star='
+                    + starName + '&genre=' + genreName + '&year=' + year + '&page='+ page +'&count=' + resultCount + '&sort1=titleD&sort2=' + sort2 + '">' + 'Title (DESC)' + '</a>';
+
+
+    let sortOptions2 = '';
+
+    sortOptions2 += '<a class = "dropdown-item" href = "movielist.html?title=' + title + '&director=' + director + '&star='
+                    + starName + '&genre=' + genreName + '&year=' + year + '&page='+ page +'&count=' + resultCount + '&sort1=' + sort1 + '&sort2=ratingA">' + 'Rating (ASC)' + '</a>';
+    sortOptions2 += '<a class = "dropdown-item" href = "movielist.html?title=' + title + '&director=' + director + '&star='
+                    + starName + '&genre=' + genreName + '&year=' + year + '&page='+ page +'&count=' + resultCount + '&sort1=' + sort1 + '&sort2=ratingD">' + 'Rating (DESC)' + '</a>';
+    sortOptions2 += '<a class = "dropdown-item" href = "movielist.html?title=' + title + '&director=' + director + '&star='
+                    + starName + '&genre=' + genreName + '&year=' + year + '&page='+ page +'&count=' + resultCount + '&sort1=' + sort1 + '&sort2=titleA">' + 'Title (ASC)' + '</a>';
+    sortOptions2 += '<a class = "dropdown-item" href = "movielist.html?title=' + title + '&director=' + director + '&star='
+                    + starName + '&genre=' + genreName + '&year=' + year + '&page='+ page +'&count=' + resultCount + '&sort1=' + sort1 + '&sort2=titleD">' + 'Title (DESC)' + '</a>';
+
+    let perPageDrop = jQuery("#perPageDrop");
+    let perPageResult = jQuery("#perPageResult");
+    let perPageDropOptions = "";
+
+    perPageDropOptions += '<a class = "dropdown-item" href = "movielist.html?title=' + title + '&director=' + director + '&star='
+        + starName + '&genre=' + genreName + '&year=' + year + '&page='+ page +'&count=10&sort1=' + sort1 + '&sort2=' + sort2 + '">' + '10' + '</a>';
+
+    perPageDropOptions += '<a class = "dropdown-item" href = "movielist.html?title=' + title + '&director=' + director + '&star='
+        + starName + '&genre=' + genreName + '&year=' + year + '&page='+ page +'&count=25&sort1=' + sort1 + '&sort2=' + sort2 + '">' + '25' + '</a>';
+
+    perPageDropOptions += '<a class = "dropdown-item" href = "movielist.html?title=' + title + '&director=' + director + '&star='
+        + starName + '&genre=' + genreName + '&year=' + year + '&page='+ page +'&count=50&sort1=' + sort1 + '&sort2=' + sort2 + '">' + '50' + '</a>';
+
+    perPageDropOptions += '<a class = "dropdown-item" href = "movielist.html?title=' + title + '&director=' + director + '&star='
+        + starName + '&genre=' + genreName + '&year=' + year + '&page='+ page +'&count=100&sort1=' + sort1 + '&sort2=' + sort2 + '">' + '100' + '</a>';
+
+    perPageDrop.append(resultCount);
+    perPageResult.append(perPageDropOptions);
+
+    sortBy1.append(sortOptions1);
+    sortBy2.append(sortOptions2);
+}
+
 function handleCart(retrieveId, retrieveTitle)
 {
     alert('Added ' + retrieveTitle + " to your cart.");
@@ -99,4 +150,17 @@ jQuery.ajax({
     url: "api/movielist?title=" + title +  "&director=" + director + "&star=" + starName + "&genre=" + genreName + "&year=" + year
         + "&page=" + page + "&count=" + resultCount + "&sort1=" + sort1 + "&sort2=" + sort2,
     success: (resultData) => handleListResult(resultData)
+});
+
+function handleJump()
+{
+
+}
+
+jQuery.ajax({
+    dataType: "json",
+    method: "GET",
+    url: "api/single-star",
+    data: {urlTitle: title},
+    success: (resultData) => handleJump(resultData)
 });

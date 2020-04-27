@@ -40,6 +40,18 @@ public class CheckoutPageServlet extends HttpServlet {
                 Connection dbcon = dataSource.getConnection();
                 Statement statement1 = dbcon.createStatement();
 
+                Statement statement2 = dbcon.createStatement();
+                String getLastSale =
+                        "SELECT *\n" +
+                        "FROM sales\n" +
+                        "ORDER BY id DESC\n" +
+                        "LIMIT 1;";
+                ResultSet lastSaleSet = statement2.executeQuery(getLastSale);
+                while(lastSaleSet.next())
+                    request.getSession().setAttribute("mostRecentSale", lastSaleSet.getString("id"));
+
+                System.out.println("" + request.getSession().getAttribute("mostRecentSale"));
+
                 String cardQuery = "SELECT * \n" +
                         "FROM creditcards \n" +
                         "WHERE id = '" + cardNum + "'\n" +
@@ -54,15 +66,13 @@ public class CheckoutPageServlet extends HttpServlet {
                     exp = cardSet.getString("expiration");
                 }
 
-                if (!card.isEmpty() && !exp.isEmpty()) {
-                    if(previousItems != null && !previousItems.isEmpty()) {
-
-
+                if (previousItems != null && !previousItems.isEmpty()) {
+                    if(!card.isEmpty() && !exp.isEmpty()) {
                         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
                         Date dateobj = new Date();
                         String newSale = "";
                         String custId = "" + request.getSession().getAttribute("custSessionId");
-
+                        int orderSize = 0;
                         for(int i = 0; i < previousItems.size() - 2; i += 3)
                         {
                             int count = Integer.parseInt(previousItems.get(i+2));
@@ -76,22 +86,19 @@ public class CheckoutPageServlet extends HttpServlet {
                                 insertRow.setString(3, df.format(dateobj));
 
                                 insertRow.execute();
+                                orderSize++;
                             }
                         }
-                        previousItems.clear();
                         out.write("order_success");
                     }
                     else
-                        out.write("empty_cart");
+                        out.write("invalid_info");
                 }
                 else
-                    out.write("invalid_info");
+                    out.write("empty_cart");
 
 
                 response.setStatus(200);
-                cardSet.close();
-                statement1.close();
-                dbcon.close();
             } catch (Exception e) {
                 out.write(e.getMessage());
                 response.setStatus(500);

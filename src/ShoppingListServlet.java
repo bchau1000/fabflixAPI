@@ -33,7 +33,6 @@ public class ShoppingListServlet extends HttpServlet {
         System.out.println(item);
         HttpSession session = request.getSession();
 
-        // get the previous items in a ArrayList
         ArrayList<String> previousItems = (ArrayList<String>) session.getAttribute("previousItems");
 
         if(!item.isEmpty()) {
