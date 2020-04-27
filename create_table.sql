@@ -76,28 +76,47 @@ CREATE TABLE ratings
     FOREIGN KEY(movieId) REFERENCES movies(id)
 );
 
-DROP VIEW IF EXISTS starsInMovies;
-CREATE VIEW starsInMovies as
-    SELECT m.id, m.title, m.year, m.director, s.name, s.id as 'starId'
-    FROM stars s JOIN stars_in_movies sim JOIN movies m
-    WHERE s.id = sim.starId and m.id = sim.movieId
-    ORDER BY m.title;
+DROP VIEW IF EXISTS starringcount;
+	CREATE VIEW starringcount AS
+	SELECT s.name as 'name', s.id as 'starIdCount', COUNT(sim.starId) as 'count'
+	FROM stars AS s JOIN stars_in_movies AS sim
+	WHERE s.id = sim.starId
+	GROUP BY s.id
+	ORDER BY COUNT(sim.starId) DESC, s.name ASC;
 
-DROP VIEW IF EXISTS avgRatings;
-CREATE VIEW avgRatings as
+DROP VIEW IF EXISTS avgratings;
+CREATE VIEW avgratings as
     SELECT m.id, m.title, FORMAT(AVG(r.rating), 1) as 'rating'
     FROM ratings r JOIN movies m
     WHERE r.movieId = m.Id
     GROUP BY m.Id
     ORDER BY rating DESC;
 
-DROP VIEW IF EXISTS genreView; 
-CREATE VIEW genreView as
+DROP VIEW IF EXISTS genreview; 
+CREATE VIEW genreview as
     SELECT GROUP_CONCAT(DISTINCT g.name SEPARATOR ', ') as 'genres', gin.movieId
     FROM genres g JOIN genres_in_movies gin
     WHERE gin.genreId= g.id
     GROUP BY gin.movieId;
-    
+
+DROP VIEW IF EXISTS singlemovie;
+	CREATE VIEW singlemovie AS
+	SELECT m.id as 'id', m.title as 'title', m.year as 'year', gw.genres as 'genres', 
+		ar.rating as 'rating', sc.name as 'name', sim.starId as 'starId', m.director as 'director', sc.count as 'count'
+	FROM movies as m JOIN stars_in_movies sim JOIN starringCount as sc JOIN genreview as gw JOIN avgratings as ar
+	WHERE m.id = sim.movieId AND sim.starId = sc.starIdCount AND gw.movieId = m.id AND ar.id = m.id
+	ORDER BY count DESC, name ASC;
+
+SELECT *
+FROM singlemovie
+WHERE id = 'tt0296809';
+
+DROP VIEW IF EXISTS starsInMovies;
+CREATE VIEW starsInMovies as
+    SELECT m.id, m.title, m.year, m.director, s.name, s.id as 'starId'
+    FROM stars s JOIN stars_in_movies sim JOIN movies m
+    WHERE s.id = sim.starId and m.id = sim.movieId
+    ORDER BY m.title;
 
 DROP VIEW IF EXISTS singleMovie;
 CREATE VIEW singleMovie as
