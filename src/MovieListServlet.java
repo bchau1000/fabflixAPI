@@ -63,6 +63,7 @@ public class MovieListServlet extends HttpServlet {
 
             if(stringYear.isEmpty())
             {
+                System.out.println(star);
                 if(!title.equals("~")) {
                     query = "SELECT *\n" +
                             "FROM movielist\n" +
