@@ -13,8 +13,8 @@ Enter: mvn clean
 Enter: mvn package
 Import the project into Intellij as a Maven project.
 To run the project, add a new configuration: Tomcat Server > Local
-Mark the artifact(s): cs122b-spring20-project1-team10:war OR cs122b-spring20-project1-team10:war exploded
-In the application context at the bottom, change the existing text to: /cs122b-spring20-project1-team10
+Mark the artifact(s): cs122b-spring20-team-10:war OR cs122b-spring20-team-10:war exploded
+In the application context at the bottom, change the existing text to: /cs122b-spring20-team-10
 Hit apply, then ok
 Deploy the Tomcat Server
 
