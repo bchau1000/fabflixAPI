@@ -51,6 +51,7 @@ public class MainPageServlet extends HttpServlet {
             }
 
             out.write(jsonArray.toString());
+            dbcon.close();
             response.setStatus(200);
 
         } catch (Exception e) {

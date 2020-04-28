@@ -59,6 +59,7 @@ public class LoginServlet extends HttpServlet {
                     }
                 }
                 response.getWriter().write(responseJsonObject.toString());
+                dbcon.close();
             }
         } catch (SQLException e) {
             e.printStackTrace();

@@ -99,6 +99,7 @@ public class CheckoutPageServlet extends HttpServlet {
 
 
                 response.setStatus(200);
+                dbcon.close();
             } catch (Exception e) {
                 out.write(e.getMessage());
                 response.setStatus(500);

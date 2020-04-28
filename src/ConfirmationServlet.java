@@ -63,6 +63,7 @@ public class ConfirmationServlet extends HttpServlet {
               previousItems.clear();
 
               out.write(jsonArray.toString());
+              dbcon.close();
               response.setStatus(200);
 
           } catch (Exception e) {

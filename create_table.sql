@@ -1,6 +1,8 @@
 CREATE DATABASE moviedb;
 USE moviedb;
 
+SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
+
 CREATE TABLE movies
 (
 	id varchar(10) PRIMARY KEY,
@@ -103,7 +105,7 @@ DROP VIEW IF EXISTS singlemovie;
 	CREATE VIEW singlemovie AS
 	SELECT m.id as 'id', m.title as 'title', m.year as 'year', gw.genres as 'genres', 
 		ar.rating as 'rating', sc.name as 'name', sim.starId as 'starId', m.director as 'director', sc.count as 'count'
-	FROM movies as m JOIN stars_in_movies sim JOIN starringCount as sc JOIN genreview as gw JOIN avgratings as ar
+	FROM movies as m JOIN stars_in_movies sim JOIN starringcount as sc JOIN genreview as gw JOIN avgratings as ar
 	WHERE m.id = sim.movieId AND sim.starId = sc.starIdCount AND gw.movieId = m.id AND ar.id = m.id
 	ORDER BY count DESC, name ASC;
 
@@ -113,31 +115,16 @@ CREATE VIEW starsInMovies as
     FROM stars s JOIN stars_in_movies sim JOIN movies m
     WHERE s.id = sim.starId and m.id = sim.movieId
     ORDER BY m.title;
-
+    
 DROP VIEW IF EXISTS movielist;
 CREATE VIEW movielist AS
-	SELECT m.id as 'id', m.title as 'title', m.year as 'year', m.director as 'director', r.rating as'rating',
+	SELECT m.id as 'id', m.title as 'title', m.year as 'year', m.director as 'director', FORMAT(AVG(r.rating),1) 'rating',
 		SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT g.name SEPARATOR ', '), ',', 3) 'genre',
-		GROUP_CONCAT(DISTINCT s.name SEPARATOR ', ') as 'stars',
+		SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT s.name SEPARATOR ', '), ',', 3) 'stars',
 		SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT s.id SEPARATOR ', '), ',', 3) 'starsId'
-	FROM movies m JOIN allratings r JOIN genres_in_movies gin
+	FROM movies m JOIN ratings r JOIN genres_in_movies gin
 		JOIN genres g JOIN stars_in_movies sim JOIN stars s
 	WHERE m.id = r.movieId AND sim.starId = s.id AND sim.movieID = m.id
 		AND g.id = gin.genreId AND gin.movieId = m.id
 	GROUP BY r.movieId
 	ORDER BY AVG(r.rating) DESC;
-    
-DROP VIEW IF EXISTS notrated;
-	CREATE VIEW notrated AS
-	SELECT movieId
-	FROM ratings
-	UNION
-	SELECT id as 'movieId'
-		FROM movies m
-		WHERE m.id NOT IN(SELECT movieId
-		FROM ratings);
-    
-DROP VIEW IF EXISTS allratings;
-	CREATE VIEW allratings AS
-	SELECT nr.movieId as 'movieId', IFNULL(rating, '0') as 'rating'
-	FROM ratings r RIGHT JOIN notrated nr ON nr.movieId = r.movieId;
