@@ -37,7 +37,11 @@ Contributions:
 	HTML Formatting: Brian Chau
 
 
-substring matching design:
-The substring matching design is made to take any occurrence of the user's input within the tables.
-Ex: column LIKE %something%.
-Within the search engine there are multiple cases for certain situations that the user make take.
+
+Substring matching design:
+The substring matching design is made to take any occurrence of the user's input and appends wildcard characters to parameter when it is passed.
+Wildcard characters depend on the search query:
+	1. col LIKE %string% //Is a substring match
+	2. col LIKE a< 	//Is a starts with match, where a is some value A-Z or 0-9
+	3. col = ~ //Displays all non-alphanumerical characters
+	4. col = string //Is a complete match
