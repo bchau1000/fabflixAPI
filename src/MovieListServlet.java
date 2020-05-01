@@ -15,7 +15,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.ArrayList;
 
 @WebServlet(name = "MovieListServlet", urlPatterns = "/api/movielist")
 public class MovieListServlet extends HttpServlet {
@@ -49,7 +48,6 @@ public class MovieListServlet extends HttpServlet {
                 stringCount + "&sort1=" + request.getParameter("sort1") + "&sort2=" + request.getParameter("sort2");
         session.setAttribute("currentURL", currentURL);
 
-
         try {
             Connection dbcon = dataSource.getConnection();
             Statement statement = dbcon.createStatement();
@@ -63,7 +61,6 @@ public class MovieListServlet extends HttpServlet {
 
             if(stringYear.isEmpty())
             {
-                System.out.println(star);
                 if(!title.equals("~")) {
                     query = "SELECT *\n" +
                             "FROM movielist\n" +

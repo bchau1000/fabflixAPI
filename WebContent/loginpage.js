@@ -5,22 +5,23 @@ let login_form = $("#login_form");
  * @param resultDataString jsonObject
  */
 function handleLoginResult(resultDataString) {
-    let resultDataJson = JSON.parse(resultDataString);
+    if(resultDataString != "captcha_fail") {
+        let resultDataJson = JSON.parse(resultDataString);
 
-    console.log("handle login response");
-    console.log(resultDataJson);
-    console.log(resultDataJson["status"]);
+        console.log("handle login response");
+        console.log(resultDataJson);
+        console.log(resultDataJson["status"]);
 
-    // If login succeeds, it will redirect the user to movie.html
-    if (resultDataJson["status"] === "success") {
-        window.location.replace("mainpage.html");
-    } else {
-        // If login fails, the web page will display
-        // error messages on <div> with id "login_error_message"
-        console.log("show error message");
-        console.log(resultDataJson["message"]);
-        alert("Invalid information, please try again.");
+        if (resultDataJson["status"] === "success") {
+            window.location.replace("mainpage.html");
+        } else {
+            console.log("show error message");
+            console.log(resultDataJson["message"]);
+            alert("Invalid information, please try again.");
+        }
     }
+    else
+        alert("reCAPTCHA failed.");
 }
 
 /**
@@ -39,12 +40,9 @@ function submitLoginForm(formSubmitEvent) {
     $.ajax(
         "api/login", {
             method: "POST",
-            // Serialize the login form to the data sent by POST request
             data: login_form.serialize(),
             success: handleLoginResult
         }
     );
 }
-
-// Bind the submit action of the form to a handler function
 login_form.submit(submitLoginForm);
