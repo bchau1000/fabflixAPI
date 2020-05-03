@@ -1,21 +1,12 @@
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-
 import javax.annotation.Resource;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
-import java.io.PrintWriter;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
-import java.sql.ResultSet;
 
 @WebServlet(name = "ShoppingListServlet", urlPatterns = "/api/shoppinglist")
 public class ShoppingListServlet extends HttpServlet {

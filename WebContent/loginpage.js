@@ -5,9 +5,10 @@ let login_form = $("#login_form");
  * @param resultDataString jsonObject
  */
 function handleLoginResult(resultDataString) {
-    if(resultDataString != "captcha_fail") {
-        let resultDataJson = JSON.parse(resultDataString);
+    let resultDataJson = JSON.parse(resultDataString);
 
+    if(resultDataJson["captchaStatus"] === "success") {
+        console.log(resultDataJson["captchaStatus"]);
         console.log("handle login response");
         console.log(resultDataJson);
         console.log(resultDataJson["status"]);
@@ -21,7 +22,8 @@ function handleLoginResult(resultDataString) {
         }
     }
     else
-        alert("reCAPTCHA failed.");
+        alert("reCAPTCHA failed, please try again.");
+
 }
 
 /**

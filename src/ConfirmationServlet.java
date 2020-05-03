@@ -12,8 +12,8 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -30,7 +30,6 @@ public class ConfirmationServlet extends HttpServlet {
 
           try {
               Connection dbcon = dataSource.getConnection();
-              Statement statement = dbcon.createStatement();
 
               DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
               Date dateobj = new Date();
@@ -40,12 +39,17 @@ public class ConfirmationServlet extends HttpServlet {
 
               String salesQuery = "SELECT s.id, s.customerId, m.title, s.saleDate\n" +
                       "FROM sales s JOIN movies m\n" +
-                      "WHERE s.movieId = m.id && s.id > " + lastSale + "\n" +
-                      "&& customerId = '" + custId + "'\n" +
-                      "&& saleDate ='" + df.format(dateobj) + "'\n" +
+                      "WHERE s.movieId = m.id && s.id > ?\n" +
+                      "&& customerId = ? \n" +
+                      "&& saleDate = ? \n" +
                       "ORDER BY s.id DESC;";
 
-              ResultSet rs = statement.executeQuery(salesQuery);
+              PreparedStatement statement = dbcon.prepareStatement(salesQuery);
+              statement.setInt(1, lastSale);
+              statement.setString(2, custId);
+              statement.setString(3, df.format(dateobj));
+
+              ResultSet rs = statement.executeQuery();
               JsonArray jsonArray = new JsonArray();
 
               while (rs.next()) {

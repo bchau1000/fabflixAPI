@@ -14,7 +14,6 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -38,33 +37,28 @@ public class CheckoutPageServlet extends HttpServlet {
         if(!firstName.isEmpty() && !cardNum.isEmpty() && !lastName.isEmpty() && !expDate.isEmpty()) {
             try {
                 Connection dbcon = dataSource.getConnection();
-                Statement statement1 = dbcon.createStatement();
 
-                Statement statement2 = dbcon.createStatement();
-                String getLastSale =
-                        "SELECT *\n" +
-                        "FROM sales\n" +
-                        "ORDER BY id DESC\n" +
-                        "LIMIT 1;";
-                ResultSet lastSaleSet = statement2.executeQuery(getLastSale);
-                while(lastSaleSet.next())
-                    request.getSession().setAttribute("mostRecentSale", lastSaleSet.getString("id"));
+                String getLastSale = "SELECT * FROM sales ORDER BY id DESC LIMIT 1;";
+                PreparedStatement lastSaleStatement = dbcon.prepareStatement(getLastSale);
+                ResultSet lastSaleSet = lastSaleStatement.executeQuery();
+                if(lastSaleSet.next()) {session.setAttribute("mostRecentSale", lastSaleSet.getString("id"));}
 
-                System.out.println("" + request.getSession().getAttribute("mostRecentSale"));
+                String cardQuery = "SELECT * FROM creditcards WHERE id = ? AND expiration = ?;";
+                PreparedStatement cardStatement = dbcon.prepareStatement(cardQuery);
+                cardStatement.setString(1, cardNum);
+                cardStatement.setString(2, expDate);
 
-                String cardQuery = "SELECT * \n" +
-                        "FROM creditcards \n" +
-                        "WHERE id = '" + cardNum + "'\n" +
-                        "AND expiration = '" + expDate + "';";
-
-                ResultSet cardSet = statement1.executeQuery(cardQuery);
+                ResultSet cardSet = cardStatement.executeQuery();
                 String card = "";
                 String exp = "";
 
-                while (cardSet.next()) {
+                if(cardSet.next())
+                {
                     card = cardSet.getString("id");
                     exp = cardSet.getString("expiration");
                 }
+
+                System.out.println("Card:" + card + ", Expiration: " + exp);
 
                 if (previousItems != null && !previousItems.isEmpty()) {
                     if(!card.isEmpty() && !exp.isEmpty()) {
@@ -72,7 +66,6 @@ public class CheckoutPageServlet extends HttpServlet {
                         Date dateobj = new Date();
                         String newSale = "";
                         String custId = "" + request.getSession().getAttribute("custSessionId");
-                        int orderSize = 0;
                         for(int i = 0; i < previousItems.size() - 2; i += 3)
                         {
                             int count = Integer.parseInt(previousItems.get(i+2));
@@ -86,7 +79,6 @@ public class CheckoutPageServlet extends HttpServlet {
                                 insertRow.setString(3, df.format(dateobj));
 
                                 insertRow.execute();
-                                orderSize++;
                             }
                         }
                         out.write("order_success");
@@ -97,8 +89,10 @@ public class CheckoutPageServlet extends HttpServlet {
                 else
                     out.write("empty_cart");
 
-
                 response.setStatus(200);
+
+                cardSet.close();
+                lastSaleSet.close();
                 dbcon.close();
             } catch (Exception e) {
                 out.write(e.getMessage());

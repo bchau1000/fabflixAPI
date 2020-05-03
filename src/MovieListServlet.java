@@ -14,7 +14,6 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 
 @WebServlet(name = "MovieListServlet", urlPatterns = "/api/movielist")
 public class MovieListServlet extends HttpServlet {
@@ -24,19 +23,12 @@ public class MovieListServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         HttpSession session = request.getSession();
-
         PrintWriter out = response.getWriter();
 
         String title = request.getParameter("title");
-
-        String stringYear = request.getParameter("year");
-
+        String year = request.getParameter("year");
         String stringCount = request.getParameter("count");
-        int resultCount = Integer.parseInt(stringCount);
-
         String page = request.getParameter("page");
-        int pageNum = Integer.parseInt(page);
-
         String director = request.getParameter("director");
         String star = request.getParameter("star");
         String genre = request.getParameter("genre");
@@ -44,112 +36,74 @@ public class MovieListServlet extends HttpServlet {
         String sort2 = getSort(request.getParameter("sort2"));
 
         String currentURL =  "movielist.html?title=" + title +  "&director=" + director + "&star=" + star + "&genre=" +
-                genre + "&year=" + stringYear + "&page=" + page + "&count=" +
+                genre + "&year=" + year + "&page=" + page + "&count=" +
                 stringCount + "&sort1=" + request.getParameter("sort1") + "&sort2=" + request.getParameter("sort2");
         session.setAttribute("currentURL", currentURL);
 
         try {
             Connection dbcon = dataSource.getConnection();
-            Statement statement = dbcon.createStatement();
-            Statement statementC = dbcon.createStatement();
 
-            if(title.indexOf('<') != -1) { title = title.replace('<','%');}
-            else if (!title.equals("~")){ title = '%' + title + '%';}
+            if(title.indexOf('<') != -1)
+                title = title.replace('<','%');
+            else if (!title.equals("~"))
+                title = '%' + title + '%';
 
-            String query = "";
-            String rowCount = "";
+            if(year.isEmpty()) year = "%%";
 
-            if(stringYear.isEmpty())
-            {
-                if(!title.equals("~")) {
-                    query = "SELECT *\n" +
-                            "FROM movielist\n" +
-                            "WHERE genre LIKE '%" + genre + "%'\n" +
-                            "AND title LIKE '" + title + "'\n" +
-                            "AND director LIKE '%" + director + "%'\n" +
-                            "AND stars LIKE '%" + star + "%'\n" +
-                            "ORDER BY " + sort1 + ", " + sort2 + "\n" +
-                            "LIMIT " + resultCount + "\n" +
-                            "OFFSET " + (pageNum - 1) * resultCount + ";";
+            int pageNum = Integer.parseInt(page);
+            int resultCount = Integer.parseInt(stringCount);
 
-                    rowCount = "SELECT count(*) as count\n" +
-                            "FROM movielist\n" +
-                            "WHERE genre LIKE '%" + genre + "%'" +
-                            "AND director LIKE '%" + director + "%'\n" +
-                            "AND stars LIKE '%" + star + "%'\n" +
-                            "AND title LIKE '" + title + "';";
-                }
-                else {
-                    query = "SELECT *\n" +
-                            "FROM movielist\n" +
-                            "WHERE genre LIKE '%" + genre + "%'\n" +
-                            "AND title regexp '^[^a-z0-9A-Z]'\n" +
-                            "AND director LIKE '%" + director + "%'\n" +
-                            "AND stars LIKE '%" + star + "%'\n" +
-                            "ORDER BY " + sort1 + ", " + sort2 + "\n" +
-                            "LIMIT " + resultCount + "\n" +
-                            "OFFSET " + (pageNum - 1) * resultCount + ";";
+            String titleQuery = "";
+            if(title.equals("~"))
+                titleQuery = "regexp '^[^a-z0-9A-Z]'";
+            else
+                titleQuery = "LIKE ?";
 
-                    rowCount = "SELECT count(*) as count\n" +
-                            "FROM movielist\n" +
-                            "WHERE genre LIKE '%" + genre + "%'" +
-                            "AND director LIKE '%" + director + "%'\n" +
-                            "AND stars LIKE '%" + star + "%'\n" +
-                            "AND title regexp '^[^a-z0-9A-Z]';";
-                }
+            String query = "SELECT *\n" +
+                    "FROM movielist \n" +
+                    "WHERE genre LIKE ? \n" + // 1
+                    "AND title " + titleQuery + " \n" + // 2
+                    "AND director LIKE ? \n" + // 3
+                    "AND stars LIKE ? \n" + // 4
+                    "AND year LIKE ? \n"+ // 5
+                    "ORDER BY " + sort1 +  ", " + sort2 + "\n" + // 6, 7
+                    "LIMIT " + resultCount + "\n" +
+                    "OFFSET " + (pageNum - 1) * resultCount + ";";
+
+            String rowCount = "SELECT count(*) as count\n" +
+                    "FROM movielist\n" +
+                    "WHERE genre LIKE ? \n" + // 1
+                    "AND title " + titleQuery + " \n" + // 2
+                    "AND director LIKE ? \n" + // 3
+                    "AND stars LIKE ? \n" + // 4
+                    "AND year LIKE ?;"; // 5sh
+
+            PreparedStatement statement = dbcon.prepareStatement(query);
+            PreparedStatement countStatement = dbcon.prepareStatement(rowCount);
+
+            int pos = 0;
+            if(!title.equals("~")) {
+                statement.setString(2, title);
+                countStatement.setString(2, title);
             }
             else
-            {
-                int year = Integer.parseInt(stringYear);
-                if(!title.equals("~")) {
-                    query = "SELECT *\n" +
-                            "FROM movielist\n" +
-                            "WHERE genre LIKE '%" + genre + "%'\n" +
-                            "AND title LIKE '" + title + "'\n" +
-                            "AND director LIKE '%" + director + "%'\n" +
-                            "AND stars LIKE '%" + star + "%'\n" +
-                            "AND year = " + year + "\n" +
-                            "ORDER BY " + sort1 + ", " + sort2 + "\n" +
-                            "LIMIT " + resultCount + "\n" +
-                            "OFFSET " + (pageNum - 1) * resultCount + ";";
+                pos = 1;
 
-                    rowCount = "SELECT count(*) as count\n" +
-                            "FROM movielist\n" +
-                            "WHERE genre LIKE '%" + genre + "%'\n" +
-                            "AND title LIKE '" + title + "'\n" +
-                            "AND director LIKE '%" + director + "%'\n" +
-                            "AND stars LIKE '%" + star + "%'\n" +
-                            "AND year = " + year + ";";
-                }
-                else
-                {
-                    query = "SELECT *\n" +
-                            "FROM movielist\n" +
-                            "WHERE genre LIKE '%" + genre + "%'\n" +
-                            "AND title regexp '^[^a-z0-9A-Z]'\n" +
-                            "AND director LIKE '%" + director + "%'\n" +
-                            "AND stars LIKE '%" + star + "%'\n" +
-                            "AND year = " + year + "\n" +
-                            "ORDER BY " + sort1 + ", " + sort2 + "\n" +
-                            "LIMIT " + resultCount + "\n" +
-                            "OFFSET " + (pageNum - 1) * resultCount + ";";
+            statement.setString(1, "%" + genre + "%");
+            statement.setString(3 - pos, "%" + director + "%");
+            statement.setString(4 - pos, "%" + star + "%");
+            statement.setString(5 - pos, year);
 
-                    rowCount = "SELECT count(*) as count\n" +
-                            "FROM movielist\n" +
-                            "WHERE genre LIKE '%" + genre + "%'\n" +
-                            "AND title regexp '^[^a-z0-9A-Z]'\n" +
-                            "AND director LIKE '%" + director + "%'\n" +
-                            "AND stars LIKE '%" + star + "%'\n" +
-                            "AND year = " + year + ";";
-                }
-            }
+            countStatement.setString(1, "%" + genre + "%");
+            countStatement.setString(3 - pos, "%" + director + "%");
+            countStatement.setString(4 - pos, "%" + star + "%");
+            countStatement.setString(5 - pos, year);
 
-            String matchId = "SELECT s.name FROM stars s WHERE id = ?";
-
-            ResultSet queryCount = statementC.executeQuery(rowCount);
-            ResultSet rs = statement.executeQuery(query);
+            ResultSet rs = statement.executeQuery();
+            ResultSet queryCount = countStatement.executeQuery();
 
             JsonArray jsonArray = new JsonArray();
+            String matchId = "SELECT s.name FROM stars s WHERE id = ?";
 
             if(queryCount.next())
             {
@@ -176,14 +130,13 @@ public class MovieListServlet extends HttpServlet {
 
                 for(int i = 0; i < parseId.length; i++)
                 {
-                    PreparedStatement statement2 = dbcon.prepareStatement(matchId);
+                    PreparedStatement starStatement = dbcon.prepareStatement(matchId);
 
-                    statement2.setString(1, parseId[i]);
-                    ResultSet rs2 = statement2.executeQuery();
+                    starStatement.setString(1, parseId[i]);
+                    ResultSet rs2 = starStatement.executeQuery();
                     rs2.next();
 
                     String star_name = rs2.getString("name");
-
                     jsonObject.addProperty("star_name" + i, star_name);
                     jsonObject.addProperty("star_id" + i, parseId[i]);
                 }

@@ -12,7 +12,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.PreparedStatement;
 
 @WebServlet(name = "LoginServlet", urlPatterns = "/api/login")
 public class LoginServlet extends HttpServlet {
@@ -36,24 +36,20 @@ public class LoginServlet extends HttpServlet {
         String password = request.getParameter("password");
 
         try {
-            Connection dbcon = dataSource.getConnection();
-            Statement statement = dbcon.createStatement();
-
-            JsonObject captchaStatusObj = new JsonObject();
-
             try {
                 RecaptchaVerifyUtils.verify(gRecaptchaResponse);
             } catch (Exception e) {
-                out.write("captcha_fail");
-
+                JsonObject responseJsonObject = new JsonObject();
+                responseJsonObject.addProperty("captchaStatus", "fail");
+                out.write(responseJsonObject.toString());
                 out.close();
-                dbcon.close();
                 return;
             }
+            Connection dbcon = dataSource.getConnection();
 
             String query1 = "select * from customers where email ='" + username + "'";
-            ResultSet rs1 = statement.executeQuery(query1);
-
+            PreparedStatement statement = dbcon.prepareStatement(query1);
+            ResultSet rs1 = statement.executeQuery();
 
             if(rs1.next())
             {
@@ -61,6 +57,7 @@ public class LoginServlet extends HttpServlet {
                 String pass = rs1.getString("password");
                 String id = rs1.getString("id");
                 JsonObject responseJsonObject = new JsonObject();
+                responseJsonObject.addProperty("captchaStatus", "success");
                 if (username.equals(email) && password.equals(pass)) {
                     User newUser = new User(username, id);
                     request.getSession().setAttribute("user", newUser); //!!!IMPORTANT USER CLASS
@@ -71,13 +68,11 @@ public class LoginServlet extends HttpServlet {
 
                 } else {
                     responseJsonObject.addProperty("status", "fail");
+
                     if (!username.equals(email))
-                    {
                         responseJsonObject.addProperty("message", "User " + username + " does not exist.");
-                    }
-                    else {
+                    else
                         responseJsonObject.addProperty("message", "Invalid password, please try again.");
-                    }
                 }
                 response.getWriter().write(responseJsonObject.toString());
                 dbcon.close();

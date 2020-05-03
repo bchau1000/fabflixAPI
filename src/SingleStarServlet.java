@@ -32,7 +32,6 @@ public class SingleStarServlet extends HttpServlet {
 
 		try {
 			Connection dbcon = dataSource.getConnection();
-
 			String query = "SELECT s.id as 'starId', s.name as 'name', IFNULL(s.birthYear, 'N/A') as 'birthYear', " +
 					"m.id as 'movieId', m.title as 'title', m.year as 'year', m.director as 'director'" +
 					"from stars as s, stars_in_movies as sim, movies as m " +

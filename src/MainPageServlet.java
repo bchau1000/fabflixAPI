@@ -7,14 +7,12 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 
 @WebServlet(name = "MainPageServlet", urlPatterns = "/api/mainpage")
 public class MainPageServlet extends HttpServlet {
@@ -24,19 +22,14 @@ public class MainPageServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
-        HttpSession session = request.getSession();
-
-
 
         try {
             Connection dbcon = dataSource.getConnection();
-            Statement statement = dbcon.createStatement();
 
             String query = "SELECT * FROM genres;";
+            PreparedStatement statement = dbcon.prepareStatement(query);
+            ResultSet rs = statement.executeQuery();
 
-
-
-            ResultSet rs = statement.executeQuery(query);
             JsonArray jsonArray = new JsonArray();
 
             while (rs.next()) {
@@ -51,6 +44,8 @@ public class MainPageServlet extends HttpServlet {
             }
 
             out.write(jsonArray.toString());
+
+            rs.close();
             dbcon.close();
             response.setStatus(200);
 
