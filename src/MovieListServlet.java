@@ -59,33 +59,23 @@ public class MovieListServlet extends HttpServlet {
             else
                 titleQuery = "LIKE ?";
 
-            String query = "SELECT *\n" +
+            String query = "SELECT *, FOUND_ROWS() as 'count'\n" +
                     "FROM movielist \n" +
-                    "WHERE genre LIKE ? \n" + // 1
-                    "AND title " + titleQuery + " \n" + // 2
-                    "AND director LIKE ? \n" + // 3
-                    "AND stars LIKE ? \n" + // 4
-                    "AND year LIKE ? \n"+ // 5
-                    "ORDER BY " + sort1 +  ", " + sort2 + "\n" + // 6, 7
+                    "WHERE genre LIKE ? \n" +
+                    "AND title " + titleQuery + " \n" +
+                    "AND director LIKE ? \n" +
+                    "AND starnames LIKE ? \n" +
+                    "AND year LIKE ? \n" +
+                    "ORDER BY " + sort1 +  ", " + sort2 + "\n" +
                     "LIMIT " + resultCount + "\n" +
                     "OFFSET " + (pageNum - 1) * resultCount + ";";
 
-            String rowCount = "SELECT count(*) as count\n" +
-                    "FROM movielist\n" +
-                    "WHERE genre LIKE ? \n" + // 1
-                    "AND title " + titleQuery + " \n" + // 2
-                    "AND director LIKE ? \n" + // 3
-                    "AND stars LIKE ? \n" + // 4
-                    "AND year LIKE ?;"; // 5sh
-
             PreparedStatement statement = dbcon.prepareStatement(query);
-            PreparedStatement countStatement = dbcon.prepareStatement(rowCount);
 
             int pos = 0;
-            if(!title.equals("~")) {
+
+            if(!title.equals("~"))
                 statement.setString(2, title);
-                countStatement.setString(2, title);
-            }
             else
                 pos = 1;
 
@@ -94,71 +84,40 @@ public class MovieListServlet extends HttpServlet {
             statement.setString(4 - pos, "%" + star + "%");
             statement.setString(5 - pos, year);
 
-            countStatement.setString(1, "%" + genre + "%");
-            countStatement.setString(3 - pos, "%" + director + "%");
-            countStatement.setString(4 - pos, "%" + star + "%");
-            countStatement.setString(5 - pos, year);
-
             ResultSet rs = statement.executeQuery();
-            ResultSet queryCount = countStatement.executeQuery();
-
             JsonArray jsonArray = new JsonArray();
-            String matchId = "SELECT s.name FROM stars s WHERE id = ?";
 
-            if(queryCount.next())
-            {
-                String count = queryCount.getString("count");
-
-                JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("query_count", count);
-
-                jsonArray.add(jsonObject);
-            }
+            boolean firstLoop = true;
 
             while (rs.next()) {
+                String query_count = "";
+
+                if(firstLoop) {
+                    query_count = rs.getString("count");
+                    JsonObject getCount = new JsonObject();
+                    getCount.addProperty("query_count", query_count);
+                    jsonArray.add(getCount);
+
+                    firstLoop = false;
+                }
+
                 String movie_id = rs.getString("id");
                 String movie_title = rs.getString("title");
                 String genre_name = rs.getString("genre");
                 String movie_dir = rs.getString("director");
-                String movie_starsId = rs.getString("starsId");
                 String movie_yr = rs.getString("year");
                 String movie_rating = rs.getString("rating");
-
-                String parseId[] = rs.getString("starsId").split(", ");
+                String movie_stars = rs.getString("starids");
+                String star_names = rs.getString("starnames");
 
                 JsonObject jsonObject = new JsonObject();
 
-                for(int i = 0; i < parseId.length; i++)
-                {
-                    PreparedStatement starStatement = dbcon.prepareStatement(matchId);
-
-                    starStatement.setString(1, parseId[i]);
-                    ResultSet rs2 = starStatement.executeQuery();
-                    rs2.next();
-
-                    String star_name = rs2.getString("name");
-                    jsonObject.addProperty("star_name" + i, star_name);
-                    jsonObject.addProperty("star_id" + i, parseId[i]);
-                }
-
-                if(parseId.length == 1)
-                {
-                    jsonObject.addProperty("star_name1", "");
-                    jsonObject.addProperty("star_id1", "");
-                    jsonObject.addProperty("star_name2", "");
-                    jsonObject.addProperty("star_id2", "");
-                }
-                else if(parseId.length == 2)
-                {
-                    jsonObject.addProperty("star_name2", "");
-                    jsonObject.addProperty("star_id2", "");
-                }
-
+                jsonObject.addProperty("star_names", star_names);
+                jsonObject.addProperty("star_id", movie_stars);
                 jsonObject.addProperty("movie_id", movie_id);
                 jsonObject.addProperty("movie_title", movie_title);
                 jsonObject.addProperty("genre_name", genre_name);
                 jsonObject.addProperty("movie_dir", movie_dir);
-                jsonObject.addProperty("movie_starsId", movie_starsId);
                 jsonObject.addProperty("movie_yr", movie_yr);
                 jsonObject.addProperty("movie_rating", movie_rating);
 

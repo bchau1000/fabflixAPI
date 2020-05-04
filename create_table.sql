@@ -105,7 +105,7 @@ DROP VIEW IF EXISTS singlemovie;
 	CREATE VIEW singlemovie AS
 	SELECT m.id as 'id', m.title as 'title', m.year as 'year', gw.genres as 'genres', 
 		ar.rating as 'rating', sc.name as 'name', sim.starId as 'starId', m.director as 'director', sc.count as 'count'
-	FROM movies as m JOIN stars_in_movies sim JOIN starringCount as sc JOIN genreview as gw JOIN avgratings as ar
+	FROM movies as m JOIN stars_in_movies sim JOIN starringcount as sc JOIN genreview as gw JOIN avgratings as ar
 	WHERE m.id = sim.movieId AND sim.starId = sc.starIdCount AND gw.movieId = m.id AND ar.id = m.id
 	ORDER BY count DESC, name ASC;
 
@@ -119,7 +119,7 @@ CREATE VIEW starsInMovies as
 DROP VIEW IF EXISTS movie_and_rating;
 CREATE VIEW movie_and_rating AS
 	SELECT id as 'movieId', title, year, director, IFNULL(rating, 0) as 'rating'
-	FROM movies as m LEFT JOIN ratings as r 
+	FROM movies as m LEFT JOIN ratings as r
     ON m.id = r.movieId;
 
 DROP VIEW IF EXISTS movie_and_genre;
@@ -128,25 +128,23 @@ CREATE VIEW movie_and_genre AS
 	from genres_in_movies as gim JOIN genres as g
 	where gim.genreId = g.Id
     group by gim.movieId;
-    
+
 DROP VIEW IF EXISTS star_and_count;
 CREATE VIEW star_and_count AS
-	select starId, count(*) as 'count'
-	from stars_in_movies
-	group by starId
-	order by count DESC;
+	select starId, count(*) as 'count', s.name
+	from stars_in_movies as sim JOIN stars s
+    where s.id = sim.starId
+	group by sim.starId;
 
 DROP VIEW IF EXISTS movie_and_star;
 CREATE VIEW movie_and_star AS
-	select sim.movieId, 
-    GROUP_CONCAT(sim.starId ORDER BY count DESC SEPARATOR ', ') as 'starId', 
-    GROUP_CONCAT(name ORDER BY count DESC SEPARATOR ', ') as 'name'
-	from stars_in_movies as sim JOIN stars as s JOIN star_and_count as sc
-	where sim.starId = s.id AND s.id = sc.starId
-    GROUP BY sim.movieId;
-    
+	SELECT sim.movieId, GROUP_CONCAT(sim.starId SEPARATOR ", " ) as 'starids', GROUP_CONCAT(s.name SEPARATOR ", " ) as 'starnames'
+	FROM stars_in_movies as sim JOIN stars as s
+    WHERE sim.starId = s.id
+	GROUP BY movieId;
+
 DROP VIEW IF EXISTS movielist;
 CREATE VIEW movielist AS
-	SELECT mr.movieId, mr.title, mr.director, ms.name, mg.genre, mr.year, mr.rating
+	SELECT mr.movieId as 'id', mr.title, mr.director, mg.genre, mr.year, FORMAT(mr.rating, 1) as 'rating', ms.starids, ms.starnames
 	FROM movie_and_rating as mr JOIN movie_and_genre as mg JOIN movie_and_star as ms
 	WHERE mr.movieId = mg.movieId AND ms.movieId = mr.movieId;

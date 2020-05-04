@@ -47,8 +47,9 @@ public class LoginServlet extends HttpServlet {
             }
             Connection dbcon = dataSource.getConnection();
 
-            String query1 = "select * from customers where email ='" + username + "'";
+            String query1 = "select * from customers where email = ?";
             PreparedStatement statement = dbcon.prepareStatement(query1);
+            statement.setString(1, username);
             ResultSet rs1 = statement.executeQuery();
 
             if(rs1.next())
