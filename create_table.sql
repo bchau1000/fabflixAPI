@@ -3,6 +3,13 @@ USE moviedb;
 
 SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
 
+CREATE TABLE employees
+(
+	email varchar(50) PRIMARY KEY,
+    password varchar(20) NOT NULL,
+    fullname varchar(100)
+);
+
 CREATE TABLE movies
 (
 	id varchar(10) PRIMARY KEY,
@@ -86,14 +93,6 @@ DROP VIEW IF EXISTS starringcount;
 	GROUP BY s.id
 	ORDER BY COUNT(sim.starId) DESC, s.name ASC;
 
-DROP VIEW IF EXISTS avgratings;
-CREATE VIEW avgratings as
-    SELECT m.id, m.title, FORMAT(AVG(r.rating), 1) as 'rating'
-    FROM ratings r JOIN movies m
-    WHERE r.movieId = m.Id
-    GROUP BY m.Id
-    ORDER BY rating DESC;
-
 DROP VIEW IF EXISTS genreview; 
 CREATE VIEW genreview as
     SELECT GROUP_CONCAT(DISTINCT g.name SEPARATOR ', ') as 'genres', gin.movieId
@@ -105,8 +104,8 @@ DROP VIEW IF EXISTS singlemovie;
 	CREATE VIEW singlemovie AS
 	SELECT m.id as 'id', m.title as 'title', m.year as 'year', gw.genres as 'genres', 
 		ar.rating as 'rating', sc.name as 'name', sim.starId as 'starId', m.director as 'director', sc.count as 'count'
-	FROM movies as m JOIN stars_in_movies sim JOIN starringcount as sc JOIN genreview as gw JOIN avgratings as ar
-	WHERE m.id = sim.movieId AND sim.starId = sc.starIdCount AND gw.movieId = m.id AND ar.id = m.id
+	FROM movies as m JOIN stars_in_movies sim JOIN starringcount as sc JOIN genreview as gw JOIN movie_and_rating as ar
+	WHERE m.id = sim.movieId AND sim.starId = sc.starIdCount AND gw.movieId = m.id AND ar.movieId = m.id
 	ORDER BY count DESC, name ASC;
 
 DROP VIEW IF EXISTS starsInMovies;

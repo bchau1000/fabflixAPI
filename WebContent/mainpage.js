@@ -1,13 +1,16 @@
 function handleGenreResult(resultData)
 {
     let j = 0;
+    if(resultData[resultData.length - 1]["userType"] == "employee")
+        jQuery("#dashboard_link").append('<a class="nav-link" href="dashboard.html">Dashboard</a>');
+
     for(let i = 1; i <= 5; i++)
     {
         let col = "#genredc" + i
         let resultGenre = jQuery(col);
         let genre_result = "";
 
-        while(j < resultData.length)
+        while(j < resultData.length - 1)
         {
             genre_result += "<a class = \"dropdown-item\" href=" +
                 "movielist.html?title=&director=&star=&genre=" + resultData[j]["genre_name"] +
@@ -59,7 +62,6 @@ function handleGenreResult(resultData)
         }
 
         resultNum.append(num_result)
-        //genre_list.append("<a href=" + "movielist.html?title=" + i + "<&director=&star=&genre=&year=&page=1&count=50&sort1=ratingD&sort2=titleA>" + i + "</a>");
     }
 }
 

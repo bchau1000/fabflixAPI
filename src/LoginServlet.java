@@ -1,18 +1,19 @@
 import com.google.gson.JsonObject;
+import org.jasypt.util.password.StrongPasswordEncryptor;
 
 import javax.annotation.Resource;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import javax.sql.DataSource;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.io.PrintWriter;
-import java.sql.SQLException;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 
 @WebServlet(name = "LoginServlet", urlPatterns = "/api/login")
 public class LoginServlet extends HttpServlet {
@@ -47,26 +48,37 @@ public class LoginServlet extends HttpServlet {
             }
             Connection dbcon = dataSource.getConnection();
 
-            String query1 = "select * from customers where email = ?";
-            PreparedStatement statement = dbcon.prepareStatement(query1);
-            statement.setString(1, username);
-            ResultSet rs1 = statement.executeQuery();
+            String customerQuery = "select * from customers where email = ?";
+            PreparedStatement custStatement = dbcon.prepareStatement(customerQuery);
+            custStatement.setString(1, username);
+            ResultSet custSet = custStatement.executeQuery();
 
-            if(rs1.next())
+            String empQuery = "SELECT * from employees where email = ?";
+            PreparedStatement empStatement = dbcon.prepareStatement(empQuery);
+            empStatement.setString(1, username);
+            ResultSet empSet = empStatement.executeQuery();
+
+            boolean success = false;
+
+            if(custSet.next())
             {
-                String email = rs1.getString("email");
-                String pass = rs1.getString("password");
-                String id = rs1.getString("id");
+                String email = custSet.getString("email");
+                String pass = custSet.getString("password");
+                String id = custSet.getString("id");
+
+                success = new StrongPasswordEncryptor().checkPassword(password, pass);
+
                 JsonObject responseJsonObject = new JsonObject();
                 responseJsonObject.addProperty("captchaStatus", "success");
-                if (username.equals(email) && password.equals(pass)) {
-                    User newUser = new User(username, id);
+
+                if (username.equals(email) && success) {
+                    User newUser = new User(username, id, "customer");
                     request.getSession().setAttribute("user", newUser); //!!!IMPORTANT USER CLASS
                     request.getSession().setAttribute("custSessionId", newUser.getId());
+                    request.getSession().setAttribute("userType", newUser.getUserType());
 
                     responseJsonObject.addProperty("status", "success");
                     responseJsonObject.addProperty("message", "success");
-
                 } else {
                     responseJsonObject.addProperty("status", "fail");
 
@@ -76,10 +88,39 @@ public class LoginServlet extends HttpServlet {
                         responseJsonObject.addProperty("message", "Invalid password, please try again.");
                 }
                 response.getWriter().write(responseJsonObject.toString());
-                dbcon.close();
             }
+            else if(empSet.next())
+            {
+                String email = empSet.getString("email");
+                String pass = empSet.getString("password");
+
+                success = new StrongPasswordEncryptor().checkPassword(password, pass);
+
+                JsonObject responseJsonObject = new JsonObject();
+                responseJsonObject.addProperty("captchaStatus", "success");
+
+                if (username.equals(email) && success) {
+                    User newUser = new User(username, null, "employee");
+                    request.getSession().setAttribute("user", newUser); //!!!IMPORTANT USER CLASS
+                    request.getSession().setAttribute("custSessionId", newUser.getId());
+                    request.getSession().setAttribute("userType", newUser.getUserType());
+
+                    responseJsonObject.addProperty("status", "success");
+                    responseJsonObject.addProperty("message", "success");
+                } else {
+                    responseJsonObject.addProperty("status", "fail");
+
+                    if (!username.equals(email))
+                        responseJsonObject.addProperty("message", "User " + username + " does not exist.");
+                    else
+                        responseJsonObject.addProperty("message", "Invalid password, please try again.");
+                }
+                response.getWriter().write(responseJsonObject.toString());
+            }
+            dbcon.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 }
+

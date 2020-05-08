@@ -7,6 +7,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -22,6 +23,7 @@ public class MainPageServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
+        HttpSession session = request.getSession();
 
         try {
             Connection dbcon = dataSource.getConnection();
@@ -42,6 +44,10 @@ public class MainPageServlet extends HttpServlet {
 
                 jsonArray.add(jsonObject);
             }
+
+            JsonObject object = new JsonObject();
+            object.addProperty("userType", "" + session.getAttribute("userType"));
+            jsonArray.add(object);
 
             out.write(jsonArray.toString());
 

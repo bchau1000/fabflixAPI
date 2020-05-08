@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <style>
+        div.dropdown-multicol2{
+            width: 22em;
+        }
+        div.dropdown-multicol2>div.dropdown-col{
+            display:inline-block;
+            width: 48%;
+        }
+        textarea { resize:none; }
+    </style>
+    <title>Dashboard</title>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-sm bg-light navbar-light">
+    <a class="navbar-brand" href = "mainpage.html">Fabflix</a>
+
+    <ul class="navbar-nav">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Display MovieDB</a>
+            <div class="dropdown-menu dropdown-multicol2" id="tablelist">
+                <div class="dropdown-col" id = "tablecol1">
+                </div>
+                <div class="dropdown-col" id = "tablecol2">
+                </div>
+            </div>
+        </li>
+
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Modify MovieDB</a>
+            <div class="dropdown-menu" id="insertlist">
+                <div class="dropdown-col" id = "insertcol1">
+                    <button class = "dropdown-item" onClick = handleStarForm()>Add a Star</button>
+                    <button class = "dropdown-item" onClick = handleMovieForm()>Add a Movie</button>
+                </div>
+            </div>
+        </li>
+
+    </ul>
+</nav>
+
+<table class="table table-striped table-bordered" style = "width:50%">
+    <thead>
+    <tr id=dashboard_header>
+
+    </tr>
+    </thead>
+
+    <tbody id=dashboard_table_body></tbody>
+</table>
+
+<form name = "insert_form" id = "insert_form" onSubmit = required()>
+</form>
+<br>
+<div id = "status_info">
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+
+<script src="dashboard.js"></script>
+
+</body>
+</html>
