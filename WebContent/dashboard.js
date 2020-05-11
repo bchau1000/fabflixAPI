@@ -3,6 +3,8 @@ let dashboardBody = jQuery("#dashboard_table_body");
 let insertForm = jQuery("#insert_form");
 let statusInfo = jQuery("#status_info");
 
+let submit = true;
+
 function handleTableData(resultData) {
     if (resultData[resultData.length - 1]["userType"] != "employee")
         window.history.back();
@@ -111,15 +113,20 @@ function handleMovieForm()
 
 function handleOutputInfo(resultData)
 {
-    let resultArray = resultData.split('|');
+    if(submit == true) {
+        let resultArray = resultData.split('|');
 
-    let movieStatusInfo = '<textarea class="span6" rows="' + resultArray.length + '" style = "width: 23%" readonly >\n';
+        let movieStatusInfo = '<textarea class="span6" rows="' + resultArray.length + '" style = "width: 23%" readonly >\n';
 
-    for(let i = 0; i < resultArray.length; i++)
-        movieStatusInfo += resultArray[i] + "\n";
-    movieStatusInfo += '    </textarea>';
+        for (let i = 0; i < resultArray.length; i++)
+            movieStatusInfo += resultArray[i] + "\n";
+        movieStatusInfo += '    </textarea>';
 
-    statusInfo.append(movieStatusInfo);
+        statusInfo.html("");
+        statusInfo.append(movieStatusInfo);
+    }
+    else
+        statusInfo.html("");
 }
 
 function required()
@@ -130,22 +137,29 @@ function required()
             document.forms["insert_form"]["director"].value == "" || document.forms["insert_form"]["genre"].value == "" ||
             document.forms["insert_form"]["name"].value == "") {
             alert("Please enter all required fields.");
+            submit = false;
             return false;
         }
+        else
+            submit = true;
     }
     else if(document.forms["insert_form"]["insertType"].value == "star")
     {
         if(document.forms["insert_form"]["name"].value == "")
         {
             alert("Please enter all required fields.");
+            submit = false;
             return false;
         }
+        else
+            submit = true;
 
         if(document.forms["insert_form"]["birthYear"].value == "")
             document.forms["insert_form"]["birthYear"].value = 0;
 
     }
 }
+
 function handleSubmit(submitForm) {
     console.log("Success, form submitted");
 
@@ -159,7 +173,9 @@ function handleSubmit(submitForm) {
                 data: insertForm.serialize()
             }
         );
-        document.getElementById("insert_form").reset();
+
+        if(submit)
+            document.getElementById("insert_form").reset();
     }
     else if(document.forms["insert_form"]["insertType"].value == "movie")
     {
@@ -170,7 +186,8 @@ function handleSubmit(submitForm) {
                 success: handleOutputInfo
             }
         );
-        document.getElementById("insert_form").reset();
+        if(submit)
+            document.getElementById("insert_form").reset();
     }
 }
 

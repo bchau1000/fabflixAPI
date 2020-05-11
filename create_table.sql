@@ -2,6 +2,7 @@ CREATE DATABASE moviedb;
 USE moviedb;
 
 SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
+SET GLOBAL local_infile = 1;
 
 CREATE TABLE employees
 (
@@ -28,9 +29,9 @@ CREATE TABLE stars
 CREATE TABLE stars_in_movies
 (
 	starId varchar(10) NOT NULL,
-    movieID varchar(10) NOT NULL,
-    FOREIGN KEY(starID) REFERENCES stars(id),
-    FOREIGN KEY(movieID) REFERENCES movies(id)
+    movieId varchar(10) NOT NULL,
+    FOREIGN KEY(starId) REFERENCES stars(id),
+    FOREIGN KEY(movieId) REFERENCES movies(id)
 );
 
 CREATE TABLE genres
@@ -147,3 +148,6 @@ CREATE VIEW movielist AS
 	SELECT mr.movieId as 'id', mr.title, mr.director, mg.genre, mr.year, FORMAT(mr.rating, 1) as 'rating', ms.starids, ms.starnames
 	FROM movie_and_rating as mr JOIN movie_and_genre as mg JOIN movie_and_star as ms
 	WHERE mr.movieId = mg.movieId AND ms.movieId = mr.movieId;
+
+CREATE INDEX starName ON stars(name);
+CREATE INDEX moviesTD ON movies(title, director);
