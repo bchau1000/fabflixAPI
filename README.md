@@ -1,7 +1,5 @@
-Demo link: https://youtu.be/34WVjXMIuNs
-<br/>
-Prior to Deployment:<br/>
-<br/>
+Demo link: https://youtu.be/34WVjXMIuNs <br/>
+Prior to Deployment:
 1. Run the included "create_table.sql" to create the movieDB<br/>
 2. "create_table.sql" includes extra views for the necessary queries<br/>
 3. Populate the movieDB with "movie-data.sql"<br/>
