@@ -36,7 +36,9 @@ public class XMLParser {
         }
     }
 
-    private String parseStars(Connection connection) throws SQLException {
+    private String parseStars(Connection connection) throws SQLException, IOException {
+        BufferedWriter output = new BufferedWriter(new FileWriter("starData.txt"));
+
         String starErrors = "Inconsistencies @ actors63.xml\n";
         connection.setAutoCommit(false);
 
@@ -48,8 +50,13 @@ public class XMLParser {
         ResultSet maxIdSet = maxIdStatement.executeQuery();
         String strMaxId = "";
 
-        String insertVal = "INSERT INTO stars(id, name, birthYear) VALUES (?, ?, ?)";
-        PreparedStatement insert = connection.prepareStatement(insertVal);
+        String insertText = "LOAD DATA LOCAL INFILE 'starData.txt' INTO TABLE stars\n" +
+                "  FIELDS TERMINATED BY ',' ENCLOSED BY '\"'\n" +
+                "  LINES TERMINATED BY '\\n' \n" +
+                "  (id, name, @birthYear) \n" +
+                "  SET birthYear = NULLIF(@birthYear, 0);";
+
+        PreparedStatement insertT = connection.prepareStatement(insertText);
 
         String getStar = "SELECT * FROM stars WHERE name = ? AND birthYear = ?;";
         PreparedStatement starCheck = connection.prepareStatement(getStar);
@@ -77,28 +84,27 @@ public class XMLParser {
                 if(starSet.next())
                     starErrors += "Duplicate in actors63.xml @ <stagename>" + starName  + "</stagename>, <dob>" + starDob + "</dob>\n";
                 else {
-                    insert.setString(1, maxId);
-                    insert.setString(2, starName);
 
                     if (starDob == -1) {
                         System.out.println(rowCount + ". Inserting into stars: (" + maxId + ", " + starName + ", " + "N/A)");
-                        insert.setString(3, null);
+                        output.write(maxId + ", " + starName + ", " + 0 + "\n");
                     } else {
                         System.out.println(rowCount + ". Inserting into stars: (" + maxId + ", " + starName + ", " + starDob + ")");
-                        insert.setInt(3, starDob);
+                        output.write(maxId + ", " + starName + ", " + starDob + "\n");
                     }
 
-                    insert.execute();
                     rowCount++;
                     maxIdNum++;
                 }
             }
+            insertT.execute();
             connection.commit();
 
             maxIdStatement.close();
+            insertT.close();
             maxIdSet.close();
-            insert.close();
             starCheck.close();
+            output.close();
         }
         return starErrors;
     }
@@ -501,11 +507,11 @@ public class XMLParser {
         XMLParser dpe = new XMLParser();
 
         dpe.parseXmlFile();
-        dpe.parseGenres(connection);
-        outputErrors += dpe.parseMovie(connection);
+        //dpe.parseGenres(connection);
+        //outputErrors += dpe.parseMovie(connection);
         outputErrors += dpe.parseStars(connection);
-        outputErrors += dpe.parseStarMovie(connection);
-        outputErrors += dpe.deleteDupes(connection);
+        //outputErrors += dpe.parseStarMovie(connection);
+        //outputErrors += dpe.deleteDupes(connection);
 
         writer.write(outputErrors);
 
