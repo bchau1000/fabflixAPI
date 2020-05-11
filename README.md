@@ -68,3 +68,11 @@ Optimization Report: <br/>
 | mains243.xml |      ~5:00     | ~3:00           |       ~3:00       |   NOT_USED    |       ~0:30       |
 | casts124.xml |      ~3:00     | ~3:00           |       ~2:00       |   NOT_USED    |       ~0:15       |
 | actors63.xml |      ~23:00    | ~20:00          |       ~15:00      |      ~7:00    |       ~1:00       |
+
+<br/>
+  - The table above displays the execution duration (in minutes) as we progressively added more optimizations. <br/>
+  - Each consecutive column going from left to right includes the previous optimization. <br/>
+  - Batch Inserts did not seem to impact mains243.xml or actors63.xml significantly, so we instead chose not to use it. <br/>
+  - Batch inserts had the greatest impact on casts124.xml <br/>
+  - Since casts124.xml had to search through movies/stars for each entry, we placed indexes on movies(title, director) and stars(name) <br/>
+    - This also had the added effect of improving the other parsers <br/>
