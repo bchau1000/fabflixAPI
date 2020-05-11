@@ -171,9 +171,11 @@ function handleSubmit(submitForm) {
         $.ajax(
             "api/insert", {
                 method: "POST",
-                data: insertForm.serialize()
+                data: insertForm.serialize(),
+                success: starAlert
             }
         );
+
 
         if(submit)
             document.getElementById("insert_form").reset();
@@ -191,6 +193,11 @@ function handleSubmit(submitForm) {
         if(submit)
             document.getElementById("insert_form").reset();
     }
+}
+
+function starAlert(resultData)
+{
+    alert("Inserted star: " + resultData);
 }
 
 insertForm.submit(handleSubmit);

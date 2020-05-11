@@ -57,6 +57,7 @@ public class InsertServlet extends HttpServlet {
                         insertStatement.setInt(3, birthYear);
 
                     insertStatement.execute();
+                    out.write(insertId);
                 }
             }
             else if(insertType.equals("movie"))
