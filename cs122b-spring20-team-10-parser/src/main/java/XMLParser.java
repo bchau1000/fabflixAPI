@@ -17,7 +17,6 @@ public class XMLParser {
     Document movieXML;
     Document starXML;
     Document starMovieXML;
-    String allErrors = "";
 
     private void parseXmlFile() {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -37,12 +36,8 @@ public class XMLParser {
         }
     }
 
-    private void parseStars(Connection connection) throws SQLException {
-        if (connection != null) {
-            System.out.println("Connection established @ 'parseStars'");
-            System.out.println();
-        }
-
+    private String parseStars(Connection connection) throws SQLException {
+        String starErrors = "Inconsistencies @ actors63.xml\n";
         connection.setAutoCommit(false);
 
         Element starDoc = starXML.getDocumentElement();
@@ -65,6 +60,8 @@ public class XMLParser {
         int maxIdNum = Integer.parseInt(strMaxId.substring(2));
         maxIdNum++;
 
+        int rowCount = 1;
+
         if(starList != null && starList.getLength() > 0)
         {
             for(int i = 0; i < starList.getLength(); i++)
@@ -77,35 +74,36 @@ public class XMLParser {
                 starCheck.setInt(2, starDob);
                 ResultSet starSet = starCheck.executeQuery();
 
-                if(starSet.next()) {
-                    String dupeId = starSet.getString("id");
-                    System.out.println("DUPLICATE_FOUND: (" + dupeId  + ", " + starName  + ", " + starDob + ")");
-                }
+                if(starSet.next())
+                    starErrors += "Duplicate in actors63.xml @ <stagename>" + starName  + "</stagename>, <dob>" + starDob + "</dob>\n";
                 else {
                     insert.setString(1, maxId);
                     insert.setString(2, starName);
 
                     if (starDob == -1) {
-                        System.out.println("Inserting: (" + maxId + ", " + starName + ", " + "N/A)");
+                        System.out.println(rowCount + ". Inserting into stars: (" + maxId + ", " + starName + ", " + "N/A)");
                         insert.setString(3, null);
                     } else {
-                        System.out.println("Inserting: (" + maxId + ", " + starName + ", " + starDob + ")");
+                        System.out.println(rowCount + ". Inserting into stars: (" + maxId + ", " + starName + ", " + starDob + ")");
                         insert.setInt(3, starDob);
                     }
 
                     insert.execute();
+                    rowCount++;
                     maxIdNum++;
                 }
             }
             connection.commit();
+
+            maxIdStatement.close();
+            maxIdSet.close();
+            insert.close();
+            starCheck.close();
         }
+        return starErrors;
     }
 
-    private void parseMovie(Connection connection) throws SQLException {
-        if (connection != null) {
-            System.out.println("Connection established @ 'parseMovie'");
-            System.out.println();
-        }
+    private String parseMovie(Connection connection) throws SQLException {
         connection.setAutoCommit(false);
 
         String getMovie = "SELECT * FROM movies WHERE title = ? AND director = ? AND year = ?;";
@@ -121,6 +119,9 @@ public class XMLParser {
         PreparedStatement maxIdStatement = connection.prepareStatement(getMaxId);
         ResultSet maxIdSet = maxIdStatement.executeQuery();
 
+        String getId = "SELECT * FROM genres WHERE name = ?;";
+        PreparedStatement getIdStatement = connection.prepareStatement(getId);
+
         String strMaxId = "";
         if(maxIdSet.next()) strMaxId = maxIdSet.getString("id");
         int maxIdNum = Integer.parseInt(strMaxId.substring(2));
@@ -130,7 +131,8 @@ public class XMLParser {
 
         NodeList directorList = docEle.getElementsByTagName("directorfilms");
 
-        String errors = "";
+        int rowCount = 1;
+        String errors = "Inconsistencies @ mains243.xml\n";
         if(directorList != null && directorList.getLength() > 0) {
             for(int i = 0; i < directorList.getLength(); i++) {
                 String dirName = "";
@@ -154,16 +156,15 @@ public class XMLParser {
                         String maxId = "tt0" + maxIdNum;
                         String movieTitle = getTextValue((Element) filmList.item(j), "t");
 
-
                         int movieYear = getIntValue((Element) filmList.item(j), "year");
 
                         if(movieTitle == null) {
-                            errors += "Error at: " + getTextValue((Element) filmList.item(j), "fid") + " (Invalid title)\n";
+                            errors += "Invalid tag <t></t> @: <fid>" + getTextValue((Element) filmList.item(j), "fid") + "</fid>\n";
                             continue;
                         }
 
                         if(movieYear == -1)
-                            errors += "Error at: " + getTextValue((Element) filmList.item(j), "fid") + " (Invalid year) \n";
+                            errors += "Invalid tag <year></year> @ <fid>: " + getTextValue((Element) filmList.item(j), "fid") + "</fid>\n";
                         else{
                             insert.setString(1, maxId);
                             insert.setString(2, movieTitle);
@@ -187,13 +188,11 @@ public class XMLParser {
 
                             ResultSet getDupes = movieCheck.executeQuery();
                             if(getDupes.next())
-                                System.out.println("DUPLICATE_FOUND");
+                                errors += "Duplicate entry from mains243.xml: " + getTextValue((Element) filmList.item(j), "fid") + "\n";
                             else {
-                                System.out.println("Inserting: (" + maxId + ", " + movieTitle + ", " + dirName + ", " + parseGenre + ", " + movieYear + ")");
+                                rowCount++;
+                                System.out.println(rowCount + ". Inserting into movies: (" + maxId + ", " + movieTitle + ", " + dirName + ", " + parseGenre + ", " + movieYear + ")");
                                 insert.execute();
-
-                                String getId = "SELECT * FROM genres WHERE name = ?;";
-                                PreparedStatement getIdStatement = connection.prepareStatement(getId);
 
                                 getIdStatement.setString(1, parseGenre);
 
@@ -201,7 +200,6 @@ public class XMLParser {
                                 if(getIdSet.next())
                                 {
                                     String genreId = getIdSet.getString("id");
-                                    System.out.println(maxId + ", " + genreId);
                                     try{
                                         insertGiM.setString(1, genreId);
                                         insertGiM.setString(2, maxId);
@@ -211,30 +209,30 @@ public class XMLParser {
                                 }
 
                                 maxIdNum++;
+                                getIdSet.close();
+
                             }
                         }
                     }
-                    catch(Exception movieParseE){
-                        errors += "Error at: " + getTextValue((Element) filmList.item(j), "fid") + " (Invalid title)\n";
-                    }
+                    catch(Exception movieParseE){ }
                 }
             }
-
-
-
             connection.commit();
+
+            movieCheck.close();
+            insert.close();
+            insertGiM.close();
+            maxIdStatement.close();
+            maxIdSet.close();
+            getIdStatement.close();
         }
+        return errors;
     }
 
-    private void parseStarMovie(Connection connection) throws SQLException, IOException {
-        if (connection != null) {
-            System.out.println("Connection established @ 'parseStarMovie'");
-            System.out.println();
-        }
-
+    private String parseStarMovie(Connection connection) throws SQLException, IOException {
         connection.setAutoCommit(false);
 
-        String smErrors = "Errors @ parseStarMovie: \n";
+        String smErrors = "Inconsistencies @ casts124.xml: \n";
 
         String getMaxId = "SELECT max(id) as 'id' FROM movies;";
         PreparedStatement maxIdStatement = connection.prepareStatement(getMaxId);
@@ -249,7 +247,7 @@ public class XMLParser {
         maxIdNum++;
 
         Element starMovieDoc = starMovieXML.getDocumentElement();
-        int getCount = 0;
+        int getCount = 1;
 
         String starQuery = "SELECT * FROM stars WHERE name = ?;";
         PreparedStatement checkStar = connection.prepareStatement(starQuery);
@@ -261,8 +259,9 @@ public class XMLParser {
         if(directorList != null && directorList.getLength() > 0) {
             for(int i = 0; i < directorList.getLength(); i++) {
 
-                if(getTextValue((Element) directorList.item(i),"is").equals(null))
+                if(getTextValue((Element) directorList.item(i),"is").equals(null)) {
                     continue;
+                }
                 String dirName = getTextValue((Element) directorList.item(i),"is");
                 Node n = directorList.item(i);
                 Element e = (Element) n;
@@ -275,8 +274,9 @@ public class XMLParser {
                             String movieTitle = getTextValue((Element) filmList.item(j), "t");
                             String starName = getTextValue((Element) filmList.item(j), "a");
 
-                            if (getTextValue((Element) filmList.item(j), "t").equals(null) || getTextValue((Element) filmList.item(j), "a").equals(null))
+                            if (getTextValue((Element) filmList.item(j), "t").equals(null) || getTextValue((Element) filmList.item(j), "a").equals(null)) {
                                 continue;
+                            }
 
                             String movieId = null;
                             String starId = null;
@@ -292,35 +292,44 @@ public class XMLParser {
                                 movieId = getMovie.getString("id");
                                 starId = getStar.getString("id");
                             }
-                            else
+                            else {
+                                getStar.close();
+                                getMovie.close();
                                 continue;
+                            }
 
 
                             if (!starId.equals(null) && !movieId.equals(null)) {
-                                System.out.println(getCount + ". Inserting: (" + starId + ", " + movieId + ")");
+                                System.out.println(getCount + ". Inserting into stars_in_movies: (" + starId + ", " + movieId + ")");
                                 insert.setString(1, starId);
                                 insert.setString(2, movieId);
                                 insert.addBatch();
                                 getCount++;
                             }
 
+                            getStar.close();
+                            getMovie.close();
                         } catch (Exception starMovieE) {
-                            smErrors += "Could not insert, star or movie does not exist in moviedb. \n";
+                            smErrors += "Could not parse title or star name @ <f>" + getTextValue((Element) e.getElementsByTagName("m").item(j),"f") +
+                                    "</f> in casts124.xml\n";
+
                         }
                     }
                 }
             }
             insert.executeBatch();
             connection.commit();
+
+            maxIdSet.close();
+            maxIdStatement.close();
+            checkMovie.close();
+            checkStar.close();
+            insert.close();
         }
+        return smErrors;
     }
 
-    private void parseGenres(Connection connection) throws SQLException {
-        if (connection != null) {
-            System.out.println("Connection established @ 'parseStarMovie'");
-            System.out.println();
-        }
-
+    private String parseGenres(Connection connection) throws SQLException, IOException {
         connection.setAutoCommit(true);
 
         Element movieDoc = movieXML.getDocumentElement();
@@ -329,28 +338,35 @@ public class XMLParser {
         String searchGenre = "SELECT * FROM genres WHERE name = ?;";
         PreparedStatement statement = connection.prepareStatement(searchGenre);
 
+        String insertGenre = "INSERT INTO genres(name) VALUES(?);";
+        PreparedStatement insertStatement = connection.prepareStatement(insertGenre);
+
+        int rowCount = 1;
+
         for(int i = 0; i < genreList.getLength(); i++)
         {
             try {
                 String genre = processGenres(getTextValue((Element) genreList.item(i), "cat"));
-                System.out.print(genre);
 
                 statement.setString(1, genre);
                 ResultSet genreSet = statement.executeQuery();
 
                 if(genreSet.next())
-                    System.out.println(" " + genreSet.getInt("id"));
+                    continue;
                 else {
-                    System.out.println();
-
-                    String insertGenre = "INSERT INTO genres(name) VALUES(?);";
-                    PreparedStatement insertStatement = connection.prepareStatement(insertGenre);
+                    System.out.println(rowCount + ". Inserting into genres: " + genre);
 
                     insertStatement.setString(1, genre);
                     insertStatement.execute();
+                    rowCount++;
                 }
-            }catch(Exception genreE){}
+                genreSet.close();
+            }catch(Exception genreE){
+            }
         }
+        insertStatement.close();
+        statement.close();
+        return "";
     }
 
     private String processGenres(String genre) throws SQLException
@@ -369,7 +385,7 @@ public class XMLParser {
             tempGenre = "Thriller";
         else if(genre.toLowerCase().equals("west"))
             tempGenre = "Western";
-        else if(genre.toLowerCase().equals("s.f."))
+        else if(genre.toLowerCase().equals("s.f.") || genre.toLowerCase().equals("scifi"))
             tempGenre = "Sci-Fi";
         else if(genre.toLowerCase().equals("advt"))
             tempGenre = "Adventure";
@@ -385,18 +401,68 @@ public class XMLParser {
             tempGenre = "Black";
         else if(genre.toLowerCase().equals("porn"))
             tempGenre = "Pornography";
-        else if(genre.toLowerCase().equals("cnr"))
+        else if(genre.toLowerCase().equals("cnr") || genre.toLowerCase().equals("cnrb"))
             tempGenre = "Cops/Robbers";
         else if(genre.toLowerCase().equals("romt"))
             tempGenre = "Romantic";
         else if(genre.toLowerCase().equals("tvm"))
             tempGenre = "TV-miniseries";
-        else if(genre.toLowerCase().equals("musc"))
+        else if(genre.toLowerCase().equals("musc") || genre.toLowerCase().equals("muscl"))
             tempGenre = "Musical";
         else if(genre.toLowerCase().equals("actn"))
             tempGenre = "Action";
+        else if(genre.toLowerCase().equals("hist"))
+            tempGenre = "History";
+        else if(genre.toLowerCase().equals("fant"))
+            tempGenre = "Fantasy";
+        else if(genre.toLowerCase().equals("cart"))
+            tempGenre = "Cartoon";
+        else if(genre.toLowerCase().equals("epic"))
+            tempGenre = "Epic";
+        else
+            tempGenre = "None";
 
         return tempGenre;
+    }
+
+    private String deleteDupes(Connection connection) throws SQLException
+    {
+        connection.setAutoCommit(false);
+
+        String allDupes = "";
+        String getDupes = "SELECT *\n" +
+                "FROM duplicateStarMovie\n" +
+                "WHERE count > 1;";
+        PreparedStatement dupes = connection.prepareStatement(getDupes);
+        ResultSet dupeSet = dupes.executeQuery();
+
+        String getDelete = "DELETE FROM stars_in_movies WHERE movieId = ? AND starId = ?;";
+        PreparedStatement deleteStatement = connection.prepareStatement(getDelete);
+
+        while(dupeSet.next())
+        {
+            int count = dupeSet.getInt("count");
+            String movieId = dupeSet.getString("movieId");
+            String starId = dupeSet.getString("starId");
+
+            for(int i = 0; i < count - 1; i++)
+            {
+                deleteStatement.setString(1, movieId);
+                deleteStatement.setString(2, starId);
+
+                deleteStatement.execute();
+            }
+
+            allDupes += "Duplicate entry parsed from casts124.xml: (" + movieId + ", " + starId + ")\n";
+        }
+
+        connection.commit();
+
+        deleteStatement.close();
+        dupes.close();
+        dupeSet.close();
+
+        return allDupes;
     }
 
     private String getTextValue(Element ele, String tagName) {
@@ -427,21 +493,23 @@ public class XMLParser {
         Connection connection = DriverManager.getConnection("jdbc:" + Parameters.dbtype + ":///" + Parameters.dbname + "?autoReconnect=true&useSSL=false",
                 Parameters.username, Parameters.password);
 
+
+        BufferedWriter writer = new BufferedWriter(new FileWriter("errors.txt"));
+
+        String outputErrors = "";
+
         XMLParser dpe = new XMLParser();
 
-        Timestamp timeStart = new Timestamp(System.currentTimeMillis());
         dpe.parseXmlFile();
         dpe.parseGenres(connection);
-        dpe.parseMovie(connection);
-        dpe.parseStars(connection);
-        dpe.parseStarMovie(connection);
+        outputErrors += dpe.parseMovie(connection);
+        outputErrors += dpe.parseStars(connection);
+        outputErrors += dpe.parseStarMovie(connection);
+        outputErrors += dpe.deleteDupes(connection);
 
-        Timestamp timeEnd = new Timestamp(System.currentTimeMillis());
+        writer.write(outputErrors);
 
-        System.out.println();
-        System.out.println("Parse started at: " + timeStart);
-        System.out.println("Parse ended at: " + timeEnd);
-
+        writer.close();
         connection.close();
     }
 

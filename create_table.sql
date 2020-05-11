@@ -148,6 +148,12 @@ CREATE VIEW movielist AS
 	SELECT mr.movieId as 'id', mr.title, mr.director, mg.genre, mr.year, FORMAT(mr.rating, 1) as 'rating', ms.starids, ms.starnames
 	FROM movie_and_rating as mr JOIN movie_and_genre as mg JOIN movie_and_star as ms
 	WHERE mr.movieId = mg.movieId AND ms.movieId = mr.movieId;
+    
+DROP VIEW IF EXISTS duplicateStarMovie;
+CREATE VIEW duplicateStarMovie AS
+	SELECT count(*) as 'count', movieId, starId
+    FROM stars_in_movies
+    GROUP BY movieId, starId;
 
 CREATE INDEX starName ON stars(name);
 CREATE INDEX moviesTD ON movies(title, director);
