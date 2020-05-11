@@ -66,8 +66,8 @@ Optimization Report: <br/>
 |              |No Optimizations| Auto-Commit OFF |PreparedStatements | Batch Inserts |Movie/Star Indexes |
 |:------------:|:--------------:|:---------------:|:-----------------:|:-------------:|:-----------------:|
 | mains243.xml |      ~5:00     | ~3:00           |       ~3:00       |   NOT_USED    |       ~0:30       |
-| casts124.xml |      ~3:00     | ~3:00           |       ~2:00       |   NOT_USED    |       ~0:15       |
-| actors63.xml |      ~23:00    | ~20:00          |       ~15:00      |      ~7:00    |       ~1:00       |
+| actors63.xml  |      ~3:00     | ~3:00           |       ~2:00       |   NOT_USED    |       ~0:15       |
+| casts124.xml |      ~23:00    | ~20:00          |       ~15:00      |      ~7:00    |       ~1:00       |
 
 <br/>
   - The table above displays the execution duration (in minutes) as we progressively added more optimizations. <br/>
