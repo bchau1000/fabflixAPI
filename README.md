@@ -28,31 +28,32 @@ Deployment Instructions (XMLParse): <br/>
 
 Contributions:<br/>
 Project 1 <br/>
-- SQL queries for Single Movie Page: Brian Chau<br/>
-- SQL queries for Single Star Page: Alex Nguyen<br/>
-- SQL queries for Movie List: Alex Nguyen<br/>
-- SQL queries for Browsing:Alex Nguyen<br/>
-- SQL queries for Searching:Alex Nguyen<br/>
-- Demo Recording: Brian Chau<br/>
-<br/>
+  - SQL queries for Single Movie Page: Brian Chau<br/>
+  - SQL queries for Single Star Page: Alex Nguyen<br/>
+  - SQL queries for Movie List: Alex Nguyen<br/>
+  - SQL queries for Browsing:Alex Nguyen<br/>
+  - SQL queries for Searching:Alex Nguyen<br/>
+  - Demo Recording: Brian Chau<br/>
+  
 Project 2 <br/>
-- Movie List Page: Alex Nguyen<br/>
-- Single Movie Page: Brian Chau<br/>
-- Single Star Page: Brian Chau<br/>
-- Checkout Page:Brian Chau<br/>
-- Confirmation :Brian Chau<br/>
-- Login Filter: Alex Nguyen<br/>
-- Login Page:Alex Nguyen<br/>
-- Shopping List:Brian Chau<br/>
-- HTML Formatting: Brian Chau<br/>
+  - Movie List Page: Alex Nguyen<br/
+  - Single Movie Page: Brian Chau<br
+  - Single Star Page: Brian Chau<br/
+  - Checkout Page:Brian Chau<br/>
+  - Confirmation :Brian Chau<br/>
+  - Login Filter: Alex Nguyen<br/>
+  - Login Page:Alex Nguyen<br/>
+  - Shopping List:Brian Chau<br/>
+  - HTML Formatting: Brian Chau<br/>
 <br/>
-Project 3<br/>
-- reCAPTCHA Login: Brian Chau <br/>
-- PreparedStatement Conversion: Brian Chau <br/>
-- Dashboard Page and add_movie: Brian Chau <br/>
-- DOM XML Parser: Alex Nguyen <br/>
-- DOM XML Parser Optimization: Alex Nguyen <br/>
-- XML Inconsistencies Output: Alex Nguyen <br/>
+
+Project 3 <br/>
+  - PreparedStatement Conversion: Brian Chau <br/>
+  - reCAPTCHA Login: Brian Chau <br/>
+  - Dashboard Page and add_movie: Brian Chau <br/>
+  - DOM XML Parser: Alex Nguyen <br/>
+  - DOM XML Parser Optimization: Alex Nguyen <br/>
+  - XML Inconsistencies Output: Alex Nguyen <br/>
 
 Substring matching design:
 The substring matching design is made to take any occurrence of the user's input and appends wildcard characters to parameter when it is passed. Wildcard characters depend on the search query: <br/>
