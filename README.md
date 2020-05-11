@@ -61,3 +61,10 @@ The substring matching design is made to take any occurrence of the user's input
 2. col LIKE a< 	//Is a starts with match, where a is some value A-Z or 0-9 <br/>
 3. col = ~ //Displays all non-alphanumerical characters <br/>
 4. col = string //Is a complete match <br/>
+
+Optimization Report: <br/>
+|              |No Optimizations| Auto-Commit OFF |PreparedStatements | Batch Inserts |Movie/Star Indexes |
+|:------------:|:--------------:|:---------------:|:-----------------:|:-------------:|:-----------------:|
+| mains243.xml |      ~5:00     | ~3:00           |       ~3:00       |   NOT_USED    |       ~0:30       |
+| casts124.xml |      ~3:00     | ~3:00           |       ~2:00       |   NOT_USED    |       ~0:15       |
+| actors63.xml |      ~23:00    | ~20:00          |       ~15:00      |      ~7:00    |       ~1:00       |
