@@ -226,13 +226,11 @@ public class XMLParser {
         }
     }
 
-    private String parseStarMovie(Connection connection) throws SQLException, IOException {
+    private void parseStarMovie(Connection connection) throws SQLException, IOException {
         if (connection != null) {
             System.out.println("Connection established @ 'parseStarMovie'");
             System.out.println();
         }
-
-        BufferedWriter out = new BufferedWriter(new FileWriter("data.txt"));
 
         connection.setAutoCommit(false);
 
@@ -253,6 +251,12 @@ public class XMLParser {
         Element starMovieDoc = starMovieXML.getDocumentElement();
         int getCount = 0;
 
+        String starQuery = "SELECT * FROM stars WHERE name = ?;";
+        PreparedStatement checkStar = connection.prepareStatement(starQuery);
+
+        String movieQuery = "SELECT * FROM movies WHERE title = ? AND director = ?;";
+        PreparedStatement checkMovie = connection.prepareStatement(movieQuery);
+
         NodeList directorList = starMovieDoc.getElementsByTagName("dirfilms");
         if(directorList != null && directorList.getLength() > 0) {
             for(int i = 0; i < directorList.getLength(); i++) {
@@ -265,37 +269,31 @@ public class XMLParser {
 
                 NodeList filmList = e.getElementsByTagName("m");
 
-                if(filmList != null && filmList.getLength() > 0) {
+                if(filmList != null && filmList.getLength() > 0 && n.getNodeType() == Node.ELEMENT_NODE) {
                     for (int j = 0; j < filmList.getLength(); j++) {
                         try {
                             String movieTitle = getTextValue((Element) filmList.item(j), "t");
                             String starName = getTextValue((Element) filmList.item(j), "a");
+
                             if (getTextValue((Element) filmList.item(j), "t").equals(null) || getTextValue((Element) filmList.item(j), "a").equals(null))
                                 continue;
-                            String movieId = "";
-                            String starId = "";
 
-                            String movieQuery = "SELECT * FROM movies WHERE title = ? AND director = ?;";
-                            PreparedStatement checkMovie = connection.prepareStatement(movieQuery);
+                            String movieId = null;
+                            String starId = null;
+
                             checkMovie.setString(1, movieTitle);
                             checkMovie.setString(2, dirName);
                             ResultSet getMovie = checkMovie.executeQuery();
 
-                            if (getMovie.next())
-                                movieId = getMovie.getString("id");
-                            else
-                                movieId = null;
-
-
-                            String starQuery = "SELECT * FROM stars WHERE name = ?;";
-                            PreparedStatement checkStar = connection.prepareStatement(starQuery);
                             checkStar.setString(1, starName);
                             ResultSet getStar = checkStar.executeQuery();
 
-                            if (getStar.next())
+                            if (getMovie.next() && getStar.next()) {
+                                movieId = getMovie.getString("id");
                                 starId = getStar.getString("id");
+                            }
                             else
-                                starId = null;
+                                continue;
 
 
                             if (!starId.equals(null) && !movieId.equals(null)) {
@@ -315,7 +313,6 @@ public class XMLParser {
             insert.executeBatch();
             connection.commit();
         }
-        return smErrors;
     }
 
     private void parseGenres(Connection connection) throws SQLException {
@@ -437,7 +434,7 @@ public class XMLParser {
         dpe.parseGenres(connection);
         dpe.parseMovie(connection);
         dpe.parseStars(connection);
-        String starMovieErr = dpe.parseStarMovie(connection);
+        dpe.parseStarMovie(connection);
 
         Timestamp timeEnd = new Timestamp(System.currentTimeMillis());
 
@@ -445,11 +442,6 @@ public class XMLParser {
         System.out.println("Parse started at: " + timeStart);
         System.out.println("Parse ended at: " + timeEnd);
 
-
-        //BufferedWriter writer = new BufferedWriter(new FileWriter("errors.txt"));
-        //writer.write(starMovieErr);
-
-        //writer.close();
         connection.close();
     }
 

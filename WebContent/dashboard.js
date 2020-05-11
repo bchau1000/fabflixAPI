@@ -111,9 +111,8 @@ function handleMovieForm()
     insertForm.append(movieForm);
 }
 
-function handleOutputInfo(resultData)
-{
-    if(submit == true) {
+function handleOutputInfo(resultData) {
+    if (submit == true) {
         let resultArray = resultData.split('|');
 
         let movieStatusInfo = '<textarea class="span6" rows="' + resultArray.length + '" style = "width: 23%" readonly >\n';
@@ -124,9 +123,11 @@ function handleOutputInfo(resultData)
 
         statusInfo.html("");
         statusInfo.append(movieStatusInfo);
-    }
-    else
+        console.log(resultArray[0]);
+    } else {
         statusInfo.html("");
+        console.log("Emptied");
+    }
 }
 
 function required()
@@ -186,6 +187,7 @@ function handleSubmit(submitForm) {
                 success: handleOutputInfo
             }
         );
+        console.log("Form submitted");
         if(submit)
             document.getElementById("insert_form").reset();
     }
