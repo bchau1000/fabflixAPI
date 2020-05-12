@@ -18,12 +18,12 @@ Deployment Instructions (WEB-APP): <br/>
 10. Deploy the Tomcat Server <br/>
 <br/>
 
-Deployment Instructions (XMLParse): <br/>
+Deployment Instructions (XMLParser): <br/>
 1. Import cs122b-spring20-team-10-parser as a separate Maven project.
 2. Download the XML files: mains243.xml, casts124.xml, and actors63.xml from http://infolab.stanford.edu/pub/movies/dtd.html <br/>
 3. Place the XML files in the same location as pom.xml <br/>
 4. Right click XMLParser in /src/main/java/ and select run(). <br/>
-5. Inconsistencies will be output to errors.txt after the parsing is complete <br/>
+5. Inconsistencies will be output to /cs122b-spring20-team-10-parser/errors.txt after the parsing is complete. <br/>
 <br/>
 
 Contributions:<br/>
