@@ -28,9 +28,9 @@ Deployment Instructions (XMLParser): <br/>
 
 The format of errors.txt is as follows:
   1. Inconsistencies regarding each file begin with "Inconsistencies @ x.xml"
-  2. mains243.xml detects duplicate entries and invalid tags/entries, gives <fid> of invalid entry
-  3. actors63.xml detects only duplicate entries and gives <stagename> of invalid entry. Invalid <dob> is inserted as null
-  4. casts124.xml detects duplicate entries and invalid tags. Gives <f> tag of invalid entry and (movieId, starId) of duplicate entry.
+  2. mains243.xml parser detects duplicate entries and invalid tags/entries, gives <fid> of invalid entry
+  3. actors63.xml parser detects only duplicate entries and gives <stagename> of invalid entry. Invalid <dob> is inserted as null
+  4. casts124.xml parser detects duplicate entries and invalid tags. Gives <f> tag of invalid entry and (movieId, starId) of duplicate entry.
 
 Contributions:<br/>
 Project 1 <br/>
