@@ -23,8 +23,14 @@ Deployment Instructions (XMLParser): <br/>
 2. Download the XML files: mains243.xml, casts124.xml, and actors63.xml from http://infolab.stanford.edu/pub/movies/dtd.html <br/>
 3. Place the XML files in the same location as pom.xml <br/>
 4. Right click XMLParser in /src/main/java/ and select run(). <br/>
-5. Inconsistencies will be output to /cs122b-spring20-team-10-parser/errors.txt after the parsing is complete. <br/>
+5. Inconsistencies will be output to /cs122b-spring20-team-10-parser/errors.txt after the parsing is complete.
 <br/>
+
+The format of errors.txt is as follows:
+  1. Inconsistencies regarding each file begin with "Inconsistencies @ x.xml"
+  2. mains243.xml detects duplicate entries and invalid tags/entries, gives <fid> of invalid entry
+  3. actors63.xml detects only duplicate entries and gives <stagename> of invalid entry. Invalid <dob> is inserted as null
+  4. casts124.xml detects duplicate entries and invalid tags. Gives <f> tag of invalid entry and (movieId, starId) of duplicate entry.
 
 Contributions:<br/>
 Project 1 <br/>
