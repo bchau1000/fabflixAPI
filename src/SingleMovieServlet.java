@@ -64,7 +64,7 @@ public class SingleMovieServlet extends HttpServlet {
 				if(requestSrc.equals("mobile"))
 				{
 					if(iter == 0) {
-						out.write(movieGenre + ";" + movieRating + ";");
+						out.write(movieGenre + ";" + movieRating + ";" + starName + ";");
 						iter++;
 					}
 					else

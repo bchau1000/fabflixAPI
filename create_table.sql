@@ -106,7 +106,7 @@ CREATE VIEW genreview as
 DROP VIEW IF EXISTS singlemovie;
 	CREATE VIEW singlemovie AS
 	SELECT m.id as 'id', m.title as 'title', m.year as 'year', gw.genres as 'genres', 
-		ar.rating as 'rating', sc.name as 'name', sim.starId as 'starId', m.director as 'director', sc.count as 'count'
+		FORMAT(ar.rating, 1) as 'rating', sc.name as 'name', sim.starId as 'starId', m.director as 'director', sc.count as 'count'
 	FROM movies as m JOIN stars_in_movies sim JOIN starringcount as sc JOIN genreview as gw JOIN movie_and_rating as ar
 	WHERE m.id = sim.movieId AND sim.starId = sc.starIdCount AND gw.movieId = m.id AND ar.movieId = m.id
 	ORDER BY count DESC, name ASC;
