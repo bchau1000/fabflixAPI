@@ -19,6 +19,8 @@ CREATE TABLE movies
     director varchar(100) NOT NULL
 );
 
+ALTER TABLE movies ADD FULLTEXT(title);
+
 CREATE TABLE stars
 (
 	id varchar(10) PRIMARY KEY,

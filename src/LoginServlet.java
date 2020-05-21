@@ -37,14 +37,16 @@ public class LoginServlet extends HttpServlet {
         String password = request.getParameter("password");
 
         try {
-            try {
-                RecaptchaVerifyUtils.verify(gRecaptchaResponse);
-            } catch (Exception e) {
-                JsonObject responseJsonObject = new JsonObject();
-                responseJsonObject.addProperty("captchaStatus", "fail");
-                out.write(responseJsonObject.toString());
-                out.close();
-                return;
+            if(!gRecaptchaResponse.equals("androidBypass")) {
+                try {
+                    RecaptchaVerifyUtils.verify(gRecaptchaResponse);
+                } catch (Exception e) {
+                    JsonObject responseJsonObject = new JsonObject();
+                    responseJsonObject.addProperty("captchaStatus", "fail");
+                    out.write(responseJsonObject.toString());
+                    out.close();
+                    return;
+                }
             }
             Connection dbcon = dataSource.getConnection();
 

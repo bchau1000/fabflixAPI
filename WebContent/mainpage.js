@@ -1,3 +1,5 @@
+let storage = window.localStorage;
+
 function handleGenreResult(resultData)
 {
     let j = 0;
@@ -64,6 +66,78 @@ function handleGenreResult(resultData)
         resultNum.append(num_result)
     }
 }
+
+function handleNewLookup(data, query, done)
+{
+    console.log("AJAX request successful")
+    storage.setItem(query, data);
+
+    let jsonData = JSON.parse(data);
+
+    done({ suggestions: jsonData});
+}
+
+function handleExistingLookup(query, done)
+{
+    console.log("Data request to LocalStorage successful");
+    let jsonData = JSON.parse(storage.getItem(query));
+
+    done({ suggestions: jsonData});
+}
+
+function handleNormalSearch(query) {
+    console.log("Performing a normal search with: " + query);
+    window.location.href = 'movielist.html?title=' + escape(query) + '&director=&star=&genre=&year=&page=1&count=50&sort1=ratingD&sort2=titleA';
+}
+
+function handleSelection(suggestion)
+{
+    console.log(suggestion["data"] + ", " + suggestion["value"]);
+    window.location.href = "single-movie.html?id=" + suggestion["data"];
+}
+
+function handleLookup(query, done) {
+    console.log("Autocomplete initiated")
+    query = query.toLowerCase();
+
+    if(storage.getItem(query) == null) {
+        console.log("Sending AJAX request to SuggestionServlet")
+        jQuery.ajax({
+            "method": "GET",
+            "url": "api/suggestion?query=" + escape(query),
+            "success": function (data) {
+                handleNewLookup(data, query, done)
+            },
+            "error": function (errorData) {
+                console.log("Lookup AJAX error: ")
+                console.log(errorData)
+            }
+        })
+    }
+    else
+    {
+        console.log("Query already cached, requesting data from LocalStorage");
+        handleExistingLookup(query, done);
+    }
+}
+
+$('#autocomplete').autocomplete({
+    lookup: function (query, done) {
+        handleLookup(query, done)
+    },
+    onSelect: function(suggestion) {
+        handleSelection(suggestion)
+    },
+
+    deferRequestBy: 300,
+    minChars: 3
+});
+
+$('#autocomplete').keypress(function(event) {
+    if (event.keyCode == 13) {
+        handleNormalSearch($('#autocomplete').val())
+    }
+})
 
 jQuery.ajax({
     dataType: "json",

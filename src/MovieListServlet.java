@@ -42,27 +42,33 @@ public class MovieListServlet extends HttpServlet {
 
         try {
             Connection dbcon = dataSource.getConnection();
-
-            if(title.indexOf('<') != -1)
-                title = title.replace('<','%');
-            else if (!title.equals("~"))
-                title = '%' + title + '%';
+            String titleQuery = "";
 
             if(year.isEmpty()) year = "%%";
+
+            if(title.equals("") || title.isEmpty()) {
+                title = "%%";
+                titleQuery = "title LIKE ?";
+            }
+            else if(title.indexOf('<') != -1) {
+                title = title.replace('<', '%');
+                titleQuery = "title LIKE ?";
+            }
+            else if (title.equals("~")) {
+                titleQuery = "title regexp '^[^a-z0-9A-Z]'";
+            }
+            else {
+                title = processTitle(title);
+                titleQuery = "MATCH(title) AGAINST(? IN BOOLEAN MODE)";
+            }
 
             int pageNum = Integer.parseInt(page);
             int resultCount = Integer.parseInt(stringCount);
 
-            String titleQuery = "";
-            if(title.equals("~"))
-                titleQuery = "regexp '^[^a-z0-9A-Z]'";
-            else
-                titleQuery = "LIKE ?";
-
             String query = "SELECT *, FOUND_ROWS() as 'count'\n" +
                     "FROM movielist \n" +
                     "WHERE genre LIKE ? \n" +
-                    "AND title " + titleQuery + " \n" +
+                    "AND " + titleQuery + " \n" +
                     "AND director LIKE ? \n" +
                     "AND starnames LIKE ? \n" +
                     "AND year LIKE ? \n" +
@@ -83,6 +89,8 @@ public class MovieListServlet extends HttpServlet {
             statement.setString(3 - pos, "%" + director + "%");
             statement.setString(4 - pos, "%" + star + "%");
             statement.setString(5 - pos, year);
+
+            System.out.println(query);
 
             ResultSet rs = statement.executeQuery();
             JsonArray jsonArray = new JsonArray();
@@ -151,5 +159,22 @@ public class MovieListServlet extends HttpServlet {
             sortBy = "title DESC";
 
         return sortBy;
+    }
+
+    public String processTitle(String title) {
+        String result = "";
+
+        if(!title.isEmpty()) {
+            String[] tokens = title.split(" ");
+
+            for (int i = 0; i < tokens.length; i++) {
+                result += "+" + tokens[i] + "*";
+
+                if (i < tokens.length - 1)
+                    result += " ";
+            }
+        }
+
+        return result;
     }
 }

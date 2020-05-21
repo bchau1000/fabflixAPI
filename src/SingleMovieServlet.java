@@ -22,7 +22,11 @@ public class SingleMovieServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		response.setContentType("application/json");
+		String requestSrc = request.getParameter("src");
+
+		if(!requestSrc.equals("mobile"))
+			response.setContentType("application/json");
+
 		HttpSession session = request.getSession();
 
 		String id = request.getParameter("id");
@@ -39,9 +43,13 @@ public class SingleMovieServlet extends HttpServlet {
 			ResultSet rs = statement.executeQuery();
 			JsonArray jsonArray = new JsonArray();
 
-			JsonObject urlObject = new JsonObject();
-			urlObject.addProperty("currentURL", currentURL);
-			jsonArray.add(urlObject);
+			if(!requestSrc.equals("mobile")) {
+				JsonObject urlObject = new JsonObject();
+				urlObject.addProperty("currentURL", currentURL);
+				jsonArray.add(urlObject);
+			}
+
+			int iter = 0;
 
 			while (rs.next()) {
 				String movieId = rs.getString("id");
@@ -52,6 +60,18 @@ public class SingleMovieServlet extends HttpServlet {
 				Double movieRating = rs.getDouble("rating");
 				String movieGenre = rs.getString("genres");
 				String starId = rs.getString("starId");
+
+				if(requestSrc.equals("mobile"))
+				{
+					if(iter == 0) {
+						out.write(movieGenre + ";" + movieRating + ";");
+						iter++;
+					}
+					else
+					{
+						out.write(starName + ";");
+					}
+				}
 
 				JsonObject jsonObject = new JsonObject();
 				jsonObject.addProperty("movie_id", movieId);
@@ -66,7 +86,8 @@ public class SingleMovieServlet extends HttpServlet {
 				jsonArray.add(jsonObject);
 			}
 
-			out.write(jsonArray.toString());
+			if(!requestSrc.equals("mobile"))
+				out.write(jsonArray.toString());
 			response.setStatus(200);
 
 			rs.close();

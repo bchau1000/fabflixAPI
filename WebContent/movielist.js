@@ -23,8 +23,10 @@ let sort2 = getParameterByName('sort2');
 function handleListResult(resultData)
 {
     let genre_table_body = jQuery("#list_table_body");
-    if(resultData == "")
+    if(resultData == "") {
         window.history.back();
+        alert("Search results are empty.");
+    }
     else {
         handlePageCount(parseInt(resultData[0]["query_count"]));
         handleSort();

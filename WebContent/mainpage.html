@@ -23,6 +23,10 @@
             width: 40%;
         }
     </style>
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="suggestionstyle.css">
 </head>
 <title>Homepage</title>
 
@@ -84,50 +88,43 @@
     </ul>
 </nav>
 <br>
-<form name = "search_form" method = "get" action = "movielist.html">
 
-    <label><b>Title:</b></label>
-    <label>
-        <input placeholder="Enter Movie Title" name="title" type="text">
-    </label>
-    <br>
+<div class="container">
+    <div class="input-group dropdown">
+        <input type="text" id="autocomplete" placeholder="Search" class="autocomplete-searchbox form-control">
+        <button class="btn btn-default" type="button">
+            <i class="fas fa-search"></i>
+        </button>
+        <button class="btn btn-default dropdown-toggle dropdown-toggle-split" id="searchAdvancedFilter" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="caret"></span>
+            <span class="sr-only">Toggle Dropdown</span>
+        </button>
+        <div class="dropdown-menu dropdown-menu-right w-100" aria-labelledby="searchAdvancedFilter">
+            <h6 class="dropdown-header" style = "text-align: center">Advanced Search</h6>
+            <form class = "form-control no-border" name = "search_form" method = "get" action = "movielist.html">
+                <input class = "form-control" placeholder="Enter Movie Title" name="title" type="text">
+                <input class = "form-control" placeholder="Enter Director" name="director" type="text">
+                <input class = "form-control" placeholder="Enter Star's Name" name="star" type="text">
+                <input class = "form-control" name="genre" type="hidden">
+                <input class = "form-control" placeholder="Enter a Year" name="year" type="number">
 
-    <label><b>Director:</b></label>
-    <label>
-        <input placeholder="Enter Director" name="director" type="text">
-    </label>
-    <br>
+                <input name="page" value = "1" type = "hidden">
+                <input name="count" value = "50" type = "hidden">
+                <input name="sort1" value = "ratingD" type = "hidden">
+                <input name="sort2" value = "titleA" type = "hidden">
 
-    <label><b>Starring:</b></label>
-    <label>
-        <input placeholder="Enter Star's Name" name="star" type="text">
-    </label>
-    <br>
-
-    <input name="genre" type="hidden">
-
-    <label><b>Release Year:</b></label>
-    <label>
-        <input placeholder="Enter a Year" name="year" type="number">
-    </label>
-    <br>
-
-    <input name="page" value = "1" type = "hidden">
-    <input name="count" value = "50" type = "hidden">
-    <input name="sort1" value = "ratingD" type = "hidden">
-    <input name="sort2" value = "titleA" type = "hidden">
-
-    <input type = "Submit" value = "Search">
-
-</form>
-
-<p id = "genre_list"></p>
+                <input type="Submit" value = "Search" class="btn btn-default btn-sm search-button">
+            </form>
+        </div>
+    </div>
+</div>
 
 </body>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.devbridge-autocomplete/1.4.7/jquery.autocomplete.min.js"></script>
 
 <script src="mainpage.js"></script>
 
