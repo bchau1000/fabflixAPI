@@ -15,6 +15,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,6 +24,7 @@ public class ListViewActivity extends Activity {
     private Button getNext;
     private Button getPrev;
     private int pageNum = 0;
+    private int resultCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,9 +96,17 @@ public class ListViewActivity extends Activity {
             public void onResponse(String response) {
                 Gson gson = new Gson();
                 Movie[] movArr = gson.fromJson(response, Movie[].class);
+
+                if(response.equals("[]")) {
+                    pageNum--;
+                    Log.d("Page:", pageNum + "");
+                    return;
+                }
+
                 movies.clear();
                 for(Movie m : movArr)
                     movies.add(m);
+
                 adapter.notifyDataSetChanged();
             }
         },
