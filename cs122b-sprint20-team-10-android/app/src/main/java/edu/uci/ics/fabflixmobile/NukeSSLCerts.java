@@ -10,7 +10,6 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 class NukeSSLCerts {
-    // Need to be called once in the entire application to disable self-signed SSL checks.
     static void nuke() {
         try {
             TrustManager[] trustAllCerts = new TrustManager[]{

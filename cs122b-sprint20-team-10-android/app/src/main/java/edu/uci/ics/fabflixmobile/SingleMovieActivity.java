@@ -35,14 +35,12 @@ public class SingleMovieActivity extends Activity {
 
         RequestQueue queue = NetworkManager.sharedManager(this).queue;
 
-        //Uri uri = new Uri.Builder()
-        //        .scheme("http")
-        //        .encodedAuthority("10.0.2.2:8080")
-        //        .path("cs122b-spring20-team-10/api/single-movie")
-        //        .appendQueryParameter("id", movieId)
-        //        .appendQueryParameter("src", "mobile")
-        //        .build();
 
+        /*
+            To access through LocalHost change the following lines in 'uri':
+                .scheme("http")
+                .encodedAuthority("http://10.0.2.2:8080/cs122b-spring20-team-10")
+         */
         Uri uri = new Uri.Builder()
                 .scheme("https")
                 .encodedAuthority("ec2-3-15-38-182.us-east-2.compute.amazonaws.com:8443")

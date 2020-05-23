@@ -9,22 +9,17 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 import com.android.volley.*;
 import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ListViewActivity extends Activity {
     private String url;
     private Button getNext;
     private Button getPrev;
     private int pageNum = 0;
-    private int resultCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +78,11 @@ public class ListViewActivity extends Activity {
         Intent getQuery = this.getIntent();
         String query = getQuery.getStringExtra("query");
 
+        /*
+            To access through LocalHost change the following lines in 'uri':
+                .scheme("http")
+                .encodedAuthority("http://10.0.2.2:8080/cs122b-spring20-team-10")
+         */
         Uri uri = new Uri.Builder()
                 .scheme("https")
                 .encodedAuthority("ec2-3-15-38-182.us-east-2.compute.amazonaws.com:8443")

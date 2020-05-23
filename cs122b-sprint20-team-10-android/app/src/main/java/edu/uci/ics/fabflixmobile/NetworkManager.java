@@ -13,7 +13,7 @@ class NetworkManager {
     RequestQueue queue;
 
     private NetworkManager() {
-        NukeSSLCerts.nuke();  // disable ssl cert self-sign check
+        NukeSSLCerts.nuke();
     }
 
     static NetworkManager sharedManager(Context ctx) {
@@ -21,8 +21,6 @@ class NetworkManager {
             instance = new NetworkManager();
             instance.queue = Volley.newRequestQueue(ctx.getApplicationContext());
 
-            // Create a new cookie store, which handles sessions information with the server.
-            // This cookie store will be shared across all the network requests.
             CookieHandler.setDefault(new CookieManager());
         }
 

@@ -69,17 +69,21 @@ function handleGenreResult(resultData)
 
 function handleNewLookup(data, query, done)
 {
-    console.log("AJAX request successful")
-    storage.setItem(query, data);
+    console.log("AJAX request successful: ")
+    console.log(data);
 
+    storage.setItem(query, data);
     let jsonData = JSON.parse(data);
+
 
     done({ suggestions: jsonData});
 }
 
 function handleExistingLookup(query, done)
 {
-    console.log("Data request to LocalStorage successful");
+    console.log("Data request to LocalStorage successful: ");
+    console.log(storage.getItem(query));
+
     let jsonData = JSON.parse(storage.getItem(query));
 
     done({ suggestions: jsonData});

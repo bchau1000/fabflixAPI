@@ -31,15 +31,18 @@ public class Login extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        // upon creation, inflate and initialize the layout
+
         setContentView(R.layout.login);
         username = findViewById(R.id.username);
         password = findViewById(R.id.password);
         message = findViewById(R.id.message);
         loginButton = findViewById(R.id.login);
 
+        /*
+            To access through LocalHost change url to:
+                url = "http://10.0.2.2:8080/cs122b-spring20-team-10/api/";
+         */
         url = "https://ec2-3-15-38-182.us-east-2.compute.amazonaws.com:8443/cs122b-spring20-team-10/api/";
-        //url = "http://10.0.2.2:8080/cs122b-spring20-team-10/api/";
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,7 +54,7 @@ public class Login extends Activity {
 
     public void login() {
         message.setText("Attempting to login...");
-        // Use the same network queue across our application
+
         final RequestQueue queue = NetworkManager.sharedManager(this).queue;
         final StringRequest loginRequest = new StringRequest(Request.Method.POST, url + "login", new Response.Listener<String>() {
             @Override
