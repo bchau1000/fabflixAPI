@@ -1,4 +1,6 @@
 let login_form = $("#login_form");
+let storage = window.localStorage;
+storage.clear();
 
 /**
  * Handle the data returned by LoginServlet

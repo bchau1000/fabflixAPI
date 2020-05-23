@@ -22,13 +22,14 @@ public class SuggestionServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PrintWriter out = response.getWriter();
         String title = request.getParameter("query");
+        title = processTitle(title);
 
         try {
             Connection dbcon = dataSource.getConnection();
-            String suggestion = "SELECT * FROM movies WHERE title LIKE ? LIMIT 10;";
+            String suggestion = "SELECT * FROM movies WHERE MATCH(title) AGAINST(? IN BOOLEAN MODE) LIMIT 10;";
 
             PreparedStatement statement = dbcon.prepareStatement(suggestion);
-            statement.setString(1, "%" + title + "%");
+            statement.setString(1, title);
             ResultSet suggestionSet = statement.executeQuery();
 
             JsonArray suggestionArray = new JsonArray();
@@ -60,5 +61,20 @@ public class SuggestionServlet extends HttpServlet {
         }
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {}
+    public String processTitle(String title) {
+        String result = "";
+
+        if(!title.isEmpty()) {
+            String[] tokens = title.split(" ");
+
+            for (int i = 0; i < tokens.length; i++) {
+                result += "+" + tokens[i] + "*";
+
+                if (i < tokens.length - 1)
+                    result += " ";
+            }
+        }
+
+        return result;
+    }
 }
