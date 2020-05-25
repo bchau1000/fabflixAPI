@@ -1,4 +1,4 @@
-Demo link: https://youtu.be/34WVjXMIuNs <br/>
+Demo link: https://www.youtube.com/watch?v=n9ELm8nWgjA <br/>
 Prior to Deployment:
 1. Run the included "create_table.sql" to create the movieDB<br/>
 2. "create_table.sql" includes extra views for the necessary queries<br/>
@@ -25,6 +25,13 @@ Deployment Instructions (XMLParser): <br/>
 4. Right click XMLParser in /src/main/java/ and select run(). <br/>
 5. Inconsistencies will be output to /cs122b-spring20-team-10-parser/errors.txt after the parsing is complete.
 <br/>
+
+Deployment Instructions (Android App): <br/>
+1. Import cs122b-spring20-team-10-android as a separate Gradle project
+2. Ensure the URL variable in Login.java matches the backend server URL
+3. Ensure the variables in the Uri builders in SingleMovieActivity.java and ListViewActivity.java match the backend server URL (instructions to deploy onto your local server are commented out).
+4. In AVD configurations, setup an emulator for the Pixel 3
+5. Run the emulator
 
 The format of errors.txt is as follows:
   1. Inconsistencies regarding each file begin with "Inconsistencies @ x.xml"
@@ -60,6 +67,11 @@ Project 3 <br/>
   - DOM XML Parser: Alex Nguyen <br/>
   - DOM XML Parser Optimization: Alex Nguyen <br/>
   - XML Inconsistencies Output: Alex Nguyen <br/>
+  
+  Project 4 <br/>
+  - Full-text Search: Alex Nguyen <br/>
+  - Autocomplete: Alex Nguyen <br/>
+  - Android App: Brian Chau <br/>
 
 Substring matching design:
 The substring matching design is made to take any occurrence of the user's input and appends wildcard characters to parameter when it is passed. Wildcard characters depend on the search query: <br/>
