@@ -2,6 +2,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import javax.annotation.Resource;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -17,8 +19,6 @@ import java.sql.ResultSet;
 
 @WebServlet(name = "SingleMovieServlet", urlPatterns = "/api/single-movie")
 public class SingleMovieServlet extends HttpServlet {
-	@Resource(name = "jdbc/moviedbexample")
-	private DataSource dataSource;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -35,7 +35,11 @@ public class SingleMovieServlet extends HttpServlet {
 		String currentURL = session.getAttribute("currentURL") + "";
 
 		try {
-			Connection dbcon = dataSource.getConnection();
+			Context initCtx = new InitialContext();
+			Context envCtx = (Context) initCtx.lookup("java:comp/env");
+			DataSource ds = (DataSource) envCtx.lookup("jdbc/moviedb");
+			Connection dbcon = ds.getConnection();
+
 			String query = "SELECT * FROM singlemovie WHERE id = ?;";
 
 			PreparedStatement statement = dbcon.prepareStatement(query);

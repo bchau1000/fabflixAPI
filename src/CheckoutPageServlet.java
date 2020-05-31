@@ -2,6 +2,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import javax.annotation.Resource;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -21,8 +23,6 @@ import java.util.Date;
 
 @WebServlet(name = "CheckoutPageServlet", urlPatterns = "/api/checkoutpage")
 public class CheckoutPageServlet extends HttpServlet {
-    @Resource(name = "jdbc/moviedbexample")
-    private DataSource dataSource;
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         HttpSession session = request.getSession();
@@ -36,7 +36,10 @@ public class CheckoutPageServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         if(!firstName.isEmpty() && !cardNum.isEmpty() && !lastName.isEmpty() && !expDate.isEmpty()) {
             try {
-                Connection dbcon = dataSource.getConnection();
+                Context initCtx = new InitialContext();
+                Context envCtx = (Context) initCtx.lookup("java:comp/env");
+                DataSource ds = (DataSource) envCtx.lookup("jdbc/moviedb");
+                Connection dbcon = ds.getConnection();
 
                 String getLastSale = "SELECT * FROM sales ORDER BY id DESC LIMIT 1;";
                 PreparedStatement lastSaleStatement = dbcon.prepareStatement(getLastSale);

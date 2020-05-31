@@ -17,7 +17,7 @@ import java.sql.ResultSet;
 
 @WebServlet(name = "SingleStarServlet", urlPatterns = "/api/single-star")
 public class SingleStarServlet extends HttpServlet {
-	@Resource(name = "jdbc/moviedbexample")
+	@Resource(name = "jdbc/moviedb")
 	private DataSource dataSource;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)

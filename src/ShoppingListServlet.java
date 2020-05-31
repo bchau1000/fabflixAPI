@@ -10,11 +10,6 @@ import java.util.ArrayList;
 
 @WebServlet(name = "ShoppingListServlet", urlPatterns = "/api/shoppinglist")
 public class ShoppingListServlet extends HttpServlet {
-    @Resource(name = "jdbc/moviedbexample")
-    private DataSource dataSource;
-
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String item = request.getParameter("item");

@@ -1,4 +1,7 @@
 import javax.annotation.Resource;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -15,8 +18,6 @@ import java.util.Vector;
 
 @WebServlet(name = "InsertServlet", urlPatterns = "/api/insert")
 public class InsertServlet extends HttpServlet {
-    @Resource(name = "jdbc/moviedbexample")
-    private DataSource dataSource;
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PrintWriter out = response.getWriter();
         String insertType = request.getParameter("insertType");
@@ -31,7 +32,11 @@ public class InsertServlet extends HttpServlet {
         int birthYear = 0;
 
         try {
-            Connection dbcon = dataSource.getConnection();
+            Context initCtx = new InitialContext();
+            Context envCtx = (Context) initCtx.lookup("java:comp/env");
+            DataSource ds = (DataSource) envCtx.lookup("jdbc/moviedb");
+            Connection dbcon = ds.getConnection();
+
             String maxStarIdQuery = "SELECT max(id) as 'max' FROM stars;";
             PreparedStatement starIdStatement = dbcon.prepareStatement(maxStarIdQuery);
             ResultSet getMaxStarId = starIdStatement.executeQuery();
@@ -107,7 +112,7 @@ public class InsertServlet extends HttpServlet {
                 }
             }
             dbcon.close();
-        } catch (SQLException e) {
+        } catch (SQLException | NamingException e) {
             e.printStackTrace();
             out.close();
         }

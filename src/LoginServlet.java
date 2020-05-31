@@ -2,6 +2,9 @@ import com.google.gson.JsonObject;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 
 import javax.annotation.Resource;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +21,7 @@ import java.sql.SQLException;
 @WebServlet(name = "LoginServlet", urlPatterns = "/api/login")
 public class LoginServlet extends HttpServlet {
 
-    @Resource(name = "jdbc/moviedbexample")
+    //@Resource(name = "jdbc/moviedbexample")
     private DataSource dataSource;
 
     public String getServletInfo() {
@@ -48,7 +51,17 @@ public class LoginServlet extends HttpServlet {
                     return;
                 }
             }
-            Connection dbcon = dataSource.getConnection();
+            Context initCtx = new InitialContext();
+
+            Context envCtx = (Context) initCtx.lookup("java:comp/env");
+            if (envCtx == null)
+                out.println("envCtx is NULL");
+
+            DataSource ds = (DataSource) envCtx.lookup("jdbc/moviedb");
+
+            Connection dbcon = ds.getConnection();
+            if (dbcon == null)
+                out.println("dbcon is null.");
 
             String customerQuery = "select * from customers where email = ?";
             PreparedStatement custStatement = dbcon.prepareStatement(customerQuery);
@@ -120,7 +133,7 @@ public class LoginServlet extends HttpServlet {
                 response.getWriter().write(responseJsonObject.toString());
             }
             dbcon.close();
-        } catch (SQLException e) {
+        } catch (SQLException | NamingException e) {
             e.printStackTrace();
         }
     }

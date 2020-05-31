@@ -2,6 +2,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import javax.annotation.Resource;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -17,8 +19,6 @@ import java.sql.ResultSet;
 
 @WebServlet(name = "MovieListServlet", urlPatterns = "/api/movielist")
 public class MovieListServlet extends HttpServlet {
-    @Resource(name = "jdbc/moviedbexample")
-    private DataSource dataSource;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
@@ -41,7 +41,18 @@ public class MovieListServlet extends HttpServlet {
         session.setAttribute("currentURL", currentURL);
 
         try {
-            Connection dbcon = dataSource.getConnection();
+            Context initCtx = new InitialContext();
+
+            Context envCtx = (Context) initCtx.lookup("java:comp/env");
+            if (envCtx == null)
+                out.println("envCtx is NULL");
+
+            DataSource ds = (DataSource) envCtx.lookup("jdbc/moviedb");
+
+            Connection dbcon = ds.getConnection();
+            if (dbcon == null)
+                out.println("dbcon is null.");
+
             String titleQuery = "";
 
             if(year.isEmpty()) year = "%%";
