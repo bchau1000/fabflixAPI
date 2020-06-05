@@ -1,7 +1,6 @@
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import javax.annotation.Resource;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.servlet.ServletException;
@@ -15,7 +14,6 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
 @WebServlet(name = "AndroidList", urlPatterns = "/api/androidlist")
 public class AndroidList extends HttpServlet {

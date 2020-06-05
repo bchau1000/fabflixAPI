@@ -1,7 +1,6 @@
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import javax.annotation.Resource;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.servlet.ServletException;

@@ -36,7 +36,7 @@ public class RecaptchaVerifyUtils {
         outStream.close();
 
         int responseCode = conn.getResponseCode();
-        System.out.println("responseCode=" + responseCode);
+        //System.out.println("responseCode=" + responseCode);
 
         InputStream inputStream = conn.getInputStream();
         InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
@@ -45,7 +45,7 @@ public class RecaptchaVerifyUtils {
         
         inputStreamReader.close();
         
-        System.out.println("Response: " + jsonObject.toString());
+        //System.out.println("Response: " + jsonObject.toString());
         
         if (jsonObject.get("success").getAsBoolean()) {
         		return;

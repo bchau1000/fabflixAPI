@@ -1,7 +1,8 @@
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import javax.annotation.Resource;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -17,8 +18,6 @@ import java.sql.ResultSet;
 
 @WebServlet(name = "SingleStarServlet", urlPatterns = "/api/single-star")
 public class SingleStarServlet extends HttpServlet {
-	@Resource(name = "jdbc/moviedb")
-	private DataSource dataSource;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -31,7 +30,11 @@ public class SingleStarServlet extends HttpServlet {
 		String currentURL = session.getAttribute("currentURL") + "";
 
 		try {
-			Connection dbcon = dataSource.getConnection();
+			Context initCtx = new InitialContext();
+			Context envCtx = (Context) initCtx.lookup("java:comp/env");
+			DataSource ds = (DataSource) envCtx.lookup("jdbc/moviedb");
+			Connection dbcon = ds.getConnection();
+
 			String query = "SELECT s.id as 'starId', s.name as 'name', IFNULL(s.birthYear, 'N/A') as 'birthYear', " +
 					"m.id as 'movieId', m.title as 'title', m.year as 'year', m.director as 'director'" +
 					"from stars as s, stars_in_movies as sim, movies as m " +

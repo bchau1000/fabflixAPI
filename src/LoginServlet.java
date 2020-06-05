@@ -1,7 +1,6 @@
 import com.google.gson.JsonObject;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 
-import javax.annotation.Resource;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -21,9 +20,6 @@ import java.sql.SQLException;
 @WebServlet(name = "LoginServlet", urlPatterns = "/api/login")
 public class LoginServlet extends HttpServlet {
 
-    //@Resource(name = "jdbc/moviedbexample")
-    private DataSource dataSource;
-
     public String getServletInfo() {
         return "Servlet connects to MySQL database and displays result of a SELECT";
     }
@@ -34,7 +30,6 @@ public class LoginServlet extends HttpServlet {
 
         PrintWriter out = response.getWriter();
         String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
-        System.out.println("gRecaptchaResponse=" + gRecaptchaResponse);
 
         String username = request.getParameter("username");
         String password = request.getParameter("password");

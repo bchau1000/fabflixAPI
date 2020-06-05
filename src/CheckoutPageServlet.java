@@ -1,7 +1,3 @@
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-
-import javax.annotation.Resource;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.servlet.ServletException;
@@ -38,7 +34,7 @@ public class CheckoutPageServlet extends HttpServlet {
             try {
                 Context initCtx = new InitialContext();
                 Context envCtx = (Context) initCtx.lookup("java:comp/env");
-                DataSource ds = (DataSource) envCtx.lookup("jdbc/moviedb");
+                DataSource ds = (DataSource) envCtx.lookup("jdbc/masterdb");
                 Connection dbcon = ds.getConnection();
 
                 String getLastSale = "SELECT * FROM sales ORDER BY id DESC LIMIT 1;";

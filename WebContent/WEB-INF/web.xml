@@ -6,12 +6,20 @@
 
     <!-- Register the DataSource which defined in META-INF/context.xml-->
     <resource-ref>
-        <description>MySQL DataSource example</description>
+        <description>SrcDB</description>
         <res-ref-name>jdbc/moviedb</res-ref-name>
         <res-type>javax.sql.DataSource</res-type>
         <res-auth>Container</res-auth>
     </resource-ref>
-    <security-constraint>
+
+    <resource-ref>
+        <description>MasterDB</description>
+        <res-ref-name>jdbc/masterdb</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+    </resource-ref>
+
+    <!--<security-constraint>
         <web-resource-collection>
             <web-resource-name>HTTPSOnly</web-resource-name>
             <url-pattern>/*</url-pattern>
@@ -19,5 +27,6 @@
         <user-data-constraint>
             <transport-guarantee>CONFIDENTIAL</transport-guarantee>
         </user-data-constraint>
-    </security-constraint>
+    </security-constraint>-->
+
 </web-app>

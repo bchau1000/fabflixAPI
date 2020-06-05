@@ -76,20 +76,41 @@ function handlePageCount(pageCount)
     let currPage = parseInt(page, 10);
     let pageLinks = "";
 
+    let newTitle = "";
+    let newStar = "";
+    for(let i = 0; i < title.length; i++)
+    {
+        if(title.charAt(i) == " ")
+            newTitle += "%20";
+        else
+            newTitle += title.charAt(i);
+    }
+
+    for(let i = 0; i < starName.length; i++)
+    {
+        if(starName.charAt(i) == " ")
+            newStar += "%20";
+        else
+            newStar += starName.charAt(i);
+    }
+
     if(currPage > 1)
         pageLinks += "<a class = \"btn btn-secondary btn-sm\" href="
-            + "movielist.html?title=" + title
-            + "&director=" + director + "&star=" + starName + "&genre=" + genreName + "&year=" + year
+            + "movielist.html?title=" + newTitle
+            + "&director=" + director + "&star=" + newStar + "&genre=" + genreName + "&year=" + year
             + "&page=" + (currPage - 1) + "&count=" + resultCount + "&sort1=" + sort1 + "&sort2=" + sort2 + ">"
             + "Prev " + " </a> ";
     else
         pageLinks += "<a class = \"btn btn-secondary btn-sm\">" + "Prev " + " </a> " ;
 
     pageLinks += "<a class = \"btn btn-secondary btn-sm\" href="
-        + "movielist.html?title=" + title
-        + "&director=" + director + "&star=" + starName + "&genre=" + genreName + "&year=" + year
+        + "movielist.html?title=" + newTitle
+        + "&director=" + director + "&star=" + newStar + "&genre=" + genreName + "&year=" + year
         + "&page=" + (currPage + 1) + "&count=" + resultCount + "&sort1=" + sort1 + "&sort2=" + sort2 + ">"
         + "Next" + " </a> ";
+
+    console.log(pageLinks);
+    console.log(newTitle);
 
     jQuery("#page_top").append(pageLinks);
     jQuery("#page_bottom").append(pageLinks);

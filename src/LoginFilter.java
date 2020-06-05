@@ -14,8 +14,6 @@ public class LoginFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-        System.out.println("LoginFilter: " + httpRequest.getRequestURI());
-
         if (this.isUrlAllowedWithoutLogin(httpRequest.getRequestURI())) {
             chain.doFilter(request, response);
             return;
@@ -35,6 +33,8 @@ public class LoginFilter implements Filter {
         allowedURIs.add("loginpage.html");
         allowedURIs.add("loginpage.js");
         allowedURIs.add("api/login");
+
+        allowedURIs.add("api/movielist");
     }
 
     public void destroy() {

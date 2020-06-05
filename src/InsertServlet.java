@@ -1,4 +1,3 @@
-import javax.annotation.Resource;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -34,7 +33,7 @@ public class InsertServlet extends HttpServlet {
         try {
             Context initCtx = new InitialContext();
             Context envCtx = (Context) initCtx.lookup("java:comp/env");
-            DataSource ds = (DataSource) envCtx.lookup("jdbc/moviedb");
+            DataSource ds = (DataSource) envCtx.lookup("jdbc/masterdb");
             Connection dbcon = ds.getConnection();
 
             String maxStarIdQuery = "SELECT max(id) as 'max' FROM stars;";

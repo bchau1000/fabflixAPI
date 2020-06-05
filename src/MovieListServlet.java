@@ -1,7 +1,6 @@
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import javax.annotation.Resource;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.servlet.ServletException;
@@ -11,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -48,6 +49,8 @@ public class MovieListServlet extends HttpServlet {
                 out.println("envCtx is NULL");
 
             DataSource ds = (DataSource) envCtx.lookup("jdbc/moviedb");
+
+            long startTime = System.nanoTime();
 
             Connection dbcon = ds.getConnection();
             if (dbcon == null)
@@ -101,9 +104,9 @@ public class MovieListServlet extends HttpServlet {
             statement.setString(4 - pos, "%" + star + "%");
             statement.setString(5 - pos, year);
 
-            System.out.println(query);
 
             ResultSet rs = statement.executeQuery();
+
             JsonArray jsonArray = new JsonArray();
 
             boolean firstLoop = true;
@@ -148,6 +151,18 @@ public class MovieListServlet extends HttpServlet {
 
             statement.close();
             dbcon.close();
+
+            long endTime = System.nanoTime();
+            long elapsedTime = endTime - startTime;
+
+            String contextPath = request.getServletContext().getRealPath("/");
+            String xmlFilePath=contextPath + "tj.txt";
+
+            File myfile = new File(xmlFilePath);
+            FileWriter outjs = new FileWriter(myfile, true);
+            outjs.write(elapsedTime + "\n");
+
+            outjs.close();
         } catch (Exception e) {
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("errorMessage", e.getMessage());
@@ -179,7 +194,8 @@ public class MovieListServlet extends HttpServlet {
             String[] tokens = title.split(" ");
 
             for (int i = 0; i < tokens.length; i++) {
-                result += "+" + tokens[i] + "*";
+                if(tokens[i].length() > 3)
+                    result += "+" + tokens[i] + "*";
 
                 if (i < tokens.length - 1)
                     result += " ";
