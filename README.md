@@ -3,7 +3,7 @@
     
     - #### Names: Brian Chau, Alex Ba Nguyen
     
-    - #### Project 5 Video Demo Link:
+    - #### Project 5 Video Demo Link: https://youtu.be/YVxK8m1WS7A
 
     - #### Instruction of deployment:
         - #### WEB-APP
