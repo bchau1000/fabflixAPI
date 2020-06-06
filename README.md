@@ -61,7 +61,13 @@
             - #### Full-text Search: Alex Nguyen
             - #### Autocomplete: Alex Nguyen
             - #### Android App: Brian Chau
-
+        - #### Project 5:
+            - #### Enabling Connection Pooling: Brian Chau
+            - #### JMeter Testing: Alex Nguyen, Brian Chau
+            - #### Log Analysis: Alex Nguyen, Brian Chau
+            - #### Log Processor: Alex Nguyen
+            - #### Servlet Log Output: Alex Nguyen
+            - #### README Questions: Brian Chau, Alex Nguyen
 
 - # Connection Pooling
     - #### The files utilizing JDBC connection pooling include:
