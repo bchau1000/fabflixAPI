@@ -64,9 +64,22 @@
 
 
 - # Connection Pooling
-    - #### Include the filename/path of all code/configuration files in GitHub of using JDBC Connection Pooling.
+    - #### The files utilizing JDBC connection pooling include:
+        - #### `/src/AndroidList` 
+        - #### `/src/CheckoutPageServlet`
+        - #### `/src/ConfirmationServlet`
+        - #### `/src/DashboardServlet`
+        - #### `/src/InsertServlet`
+        - #### `/src/LoginServlet`
+        - #### `/src/MainPageServlet`
+        - #### `/src/MovieListServlet`
+        - #### `/src/ShoppingListServlet`
+        - #### `/src/SingleMovieServlet`
+        - #### `/src/SingleStarServlet`
+        - #### `/src/SuggestionServlet`
     
     - #### Explain how Connection Pooling is utilized in the Fabflix code.
+        - #### Each servlet utilizing connection pooling allows separate requests to utilize the same "connection" between the backend and database. Instead of immediately closing a connection after using it, connection pooling maintains the connections that new requests create. Separate requests will retrieve information more efficiently by continuously "recycling" the same connection to the database over and over again.
     
     - #### Explain how Connection Pooling works with two backend SQL.
     
@@ -109,10 +122,10 @@
 | Case 1: HTTP/1 thread                          | ![](path to image in img/)   | 419                        | 341.83                              | 341.61                    | ??           |
 | Case 2: HTTP/10 threads                        | ![](path to image in img/)   | 3576                       | 3495.47                             | 3495.28                   | ??           |
 | Case 3: HTTPS/10 threads                       | ![](path to image in img/)   | 3554                       | 3463.02                             | 3462.82                   | ??           |
-| Case 4: HTTP/10 threads/No connection pooling  | ![](path to image in img/)   | ??                         |                              	   |                           | ??           |
+| Case 4: HTTP/10 threads/No connection pooling  | ![](path to image in img/)   | 3413                       | 3030.18                      	   | 3028.01                   | ??           |
 
 | **Scaled Version Test Plan**                   | **Graph Results Screenshot** | **Average Query Time(ms)** | **Average Search Servlet Time(ms)** | **Average JDBC Time(ms)** | **Analysis** |
 |------------------------------------------------|------------------------------|----------------------------|-------------------------------------|---------------------------|--------------|
 | Case 1: HTTP/1 thread                          | ![](path to image in img/)   | 550                        | 471.69                              | 471.26                    | ??           |
 | Case 2: HTTP/10 threads                        | ![](path to image in img/)   | 2641                       | 2317.96                             | 2317.65                   | ??           |
-| Case 3: HTTP/10 threads/No connection pooling  | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |
+| Case 3: HTTP/10 threads/No connection pooling  | ![](path to image in img/)   | 3651                       | 3586.56                             | 3586.38                   | ??           |
