@@ -119,13 +119,13 @@
 
 | **Single-instance Version Test Plan**          | **Graph Results Screenshot** | **Average Query Time(ms)** | **Average Search Servlet Time(ms)** | **Average JDBC Time(ms)** | **Analysis** |
 |------------------------------------------------|------------------------------|----------------------------|-------------------------------------|---------------------------|--------------|
-| Case 1: HTTP/1 thread                          | ![](path to image in img/)   | 419                        | 341.83                              | 341.61                    | ??           |
-| Case 2: HTTP/10 threads                        | ![](path to image in img/)   | 3576                       | 3495.47                             | 3495.28                   | ??           |
-| Case 3: HTTPS/10 threads                       | ![](path to image in img/)   | 3554                       | 3463.02                             | 3462.82                   | ??           |
-| Case 4: HTTP/10 threads/No connection pooling  | ![](path to image in img/)   | 3413                       | 3030.18                      	   | 3028.01                   | ??           |
+| Case 1: HTTP/1 thread                          | ![](https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-10/blob/master/img/case_1_single.PNG)       | 419                        | 341.83                              | 341.61                    | ??           |
+| Case 2: HTTP/10 threads                        | ![](https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-10/blob/master/img/case_2_single.PNG)   | 3576                       | 3495.47                             | 3495.28                   | ??           |
+| Case 3: HTTPS/10 threads                       | ![](https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-10/blob/master/img/case_3_single.PNG)   | 3554                       | 3463.02                             | 3462.82                   | ??           |
+| Case 4: HTTP/10 threads/No connection pooling  | ![](https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-10/blob/master/img/case_4_single.PNG)   | 3651                       | 3030.18                      	   | 3028.01                   | ??           |
 
 | **Scaled Version Test Plan**                   | **Graph Results Screenshot** | **Average Query Time(ms)** | **Average Search Servlet Time(ms)** | **Average JDBC Time(ms)** | **Analysis** |
 |------------------------------------------------|------------------------------|----------------------------|-------------------------------------|---------------------------|--------------|
-| Case 1: HTTP/1 thread                          | ![](path to image in img/)   | 550                        | 471.69                              | 471.26                    | ??           |
-| Case 2: HTTP/10 threads                        | ![](path to image in img/)   | 2641                       | 2317.96                             | 2317.65                   | ??           |
-| Case 3: HTTP/10 threads/No connection pooling  | ![](path to image in img/)   | 3651                       | 3586.56                             | 3586.38                   | ??           |
+| Case 1: HTTP/1 thread                          | ![](https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-10/blob/master/img/case_1_scaled.PNG)   | 550                        | 471.69                              | 471.26                    | ??           |
+| Case 2: HTTP/10 threads                        | ![](https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-10/blob/master/img/case_2_scaled.PNG)   | 2641                       | 2317.96                             | 2317.65                   | ??           |
+| Case 3: HTTP/10 threads/No connection pooling  | ![](https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-10/blob/master/img/case_3_scaled.PNG)   | 3413                       | 3586.56                             | 3586.38                   | ??           |
