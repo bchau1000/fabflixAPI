@@ -79,10 +79,11 @@
         - #### `/src/SuggestionServlet`
     
     - #### Explain how Connection Pooling is utilized in the Fabflix code.
-        - #### Each servlet utilizing connection pooling allows separate requests to utilize the same "connection" between the backend and database. Instead of immediately closing a connection after using it, connection pooling maintains the connections that new requests create. Separate requests will retrieve information more efficiently by continuously "recycling" the same connection to the database over and over again.
+        - #### Connection pooling allows separate requests to utilize the same "connection" between the backend and database. Instead of immediately closing a connection after using it, connection pooling maintains the connections that new requests create. Separate requests will retrieve information more efficiently by continuously "recycling" the same connection to the database over and over again.
+            - #### For example, in `src/MovieListServlet`, every movie query sent by the user will call the connection pool, if there is already an existing connection, the connection pool will return that connection. Otherwise, the connection pool will establish a new connection and add it to the pool.
     
     - #### Explain how Connection Pooling works with two backend SQL.
-    
+        - #### Connection pools do not share between Master/Slave instances. Read/write requests will always be sent directly to the Master instance, as a result servlets will function in the same way they would if the web application was deployed on a single server/instance. On the other hand, read only requests will be sent based on the load-balancer, which means they may end up in either the Master or the Slave instance. Each read only request will check its respective instance for an existing connection, if one does exist, the connection pool will return that connection, otherwise a new connection will be established and added to the pool.
 
 - # Master/Slave
     - #### The files utilizing or enabling routing queries to Master/Slave SQL include:
