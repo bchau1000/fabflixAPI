@@ -31,44 +31,7 @@
             3. #### Ensure the variables in the Uri builders in `SingleMovieActivity.java` and `ListViewActivity.java` match the backend server URL (instructions to deploy onto your local server are commented out).
             4. #### In AVD configurations, setup an emulator for the Pixel 3
             5. #### Run the emulator
-
-    - #### Collaborations and Work Distribution:
-        - #### Project 1:
-            - #### SQL queries for Single Movie Page: Brian Chau
-            - #### SQL queries for Single Star Page: Alex Nguyen
-            - #### SQL queries for Movie List: Alex Nguyen
-            - #### SQL queries for Browsing:Alex Nguyen
-            - #### SQL queries for Searching:Alex Nguyen
-            - #### Demo Recording: Brian Chau
-        - #### Project 2:
-            - #### Movie List Page: Alex Nguyen
-            - #### Single Movie Page: Brian Chau
-            - #### Single Star Page: Brian Chau
-            - #### Checkout Page:Brian Chau
-            - #### Confirmation :Brian Chau
-            - #### Login Filter: Alex Nguyen
-            - #### Login Page:Alex Nguyen
-            - #### Shopping List:Brian Chau
-            - #### HTML Formatting: Brian Chau
-        - #### Project 3:
-            - #### PreparedStatement Conversion: Brian Chau
-            - #### reCAPTCHA Login: Brian Chau
-            - #### Dashboard Page and add_movie: Brian Chau
-            - #### DOM XML Parser: Alex Nguyen
-            - #### DOM XML Parser Optimization: Alex Nguyen
-            - #### XML Inconsistencies Output: Alex Nguyen
-        - #### Project 4:
-            - #### Full-text Search: Alex Nguyen
-            - #### Autocomplete: Alex Nguyen
-            - #### Android App: Brian Chau
-        - #### Project 5:
-            - #### Enabling Connection Pooling: Brian Chau
-            - #### JMeter Testing: Alex Nguyen, Brian Chau
-            - #### Log Analysis: Alex Nguyen, Brian Chau
-            - #### Log Processor: Alex Nguyen
-            - #### Servlet Log Output: Alex Nguyen
-            - #### README Questions: Brian Chau, Alex Nguyen
-
+            6. 
 - # Connection Pooling
     - #### The files utilizing JDBC connection pooling include:
         - #### `/src/AndroidList` 
